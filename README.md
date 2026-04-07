@@ -1,5 +1,9 @@
 # Ultra Orchestration Skills
 
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+[![Repo Status](https://img.shields.io/badge/status-active-success)](#)
+[![Method](https://img.shields.io/badge/method-OpenSpec%20%2B%20Ultra-informational)](#skill-methodology-core)
+
 中文说明见下方 **[中文](#中文)**。
 
 A curated open-source skill suite for disciplined AI-assisted software delivery using a dual-plane model:
@@ -9,6 +13,14 @@ A curated open-source skill suite for disciplined AI-assisted software delivery 
 
 This repository is the source-of-truth for the skill system, references, and orchestration methodology.
 
+## Quick Links
+
+- Methodology: [Skill Methodology (Core)](#skill-methodology-core)
+- Install in Cursor: [How to Use in Cursor](#how-to-use-in-cursor)
+- Contributing: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- Security: [SECURITY.md](./SECURITY.md)
+- Code of Conduct: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+
 ## License
 
 This project is licensed under the **Apache License 2.0**. See [`LICENSE`](./LICENSE).
@@ -16,6 +28,9 @@ This project is licensed under the **Apache License 2.0**. See [`LICENSE`](./LIC
 ## Repository Layout
 
 ```text
+.github/
+  ISSUE_TEMPLATE/
+  workflows/
 skills/
   autoplan/
   clarify-and-intake/
@@ -32,6 +47,9 @@ skills/
   ultra-orchestrator/
 README.md
 LICENSE
+CONTRIBUTING.md
+SECURITY.md
+CODE_OF_CONDUCT.md
 ```
 
 ## Skill Methodology (Core)
@@ -157,6 +175,14 @@ Then restart Cursor or refresh agent context.
 
 本仓库是整套技能、参考资料和方法论的源码基线。
 
+## 快速链接
+
+- 方法论：[`Skill Methodology (Core)`](#skill-methodology-core)
+- 安装方式：[`How to Use in Cursor`](#how-to-use-in-cursor)
+- 贡献指南：[`CONTRIBUTING.md`](./CONTRIBUTING.md)
+- 安全策略：[`SECURITY.md`](./SECURITY.md)
+- 行为准则：[`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md)
+
 ## 许可证
 
 本项目采用 **Apache License 2.0**。见 [`LICENSE`](./LICENSE)。
@@ -164,6 +190,9 @@ Then restart Cursor or refresh agent context.
 ## 仓库结构
 
 ```text
+.github/
+  ISSUE_TEMPLATE/
+  workflows/
 skills/
   autoplan/
   clarify-and-intake/
@@ -180,6 +209,9 @@ skills/
   ultra-orchestrator/
 README.md
 LICENSE
+CONTRIBUTING.md
+SECURITY.md
+CODE_OF_CONDUCT.md
 ```
 
 ## Skill 方法论（核心）
@@ -191,7 +223,7 @@ LICENSE
 
 两者必须同步，不能互相替代。
 
-### 2）项目作用流程（你提到的关键点）
+### 2）项目作用流程（关键）
 
 开发结构先按这条主线：
 
