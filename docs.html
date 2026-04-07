@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ultra Orchestration Whitepaper / 白皮书</title>
+  <style>
+    :root { --fg:#111; --muted:#666; --bg:#fff; --line:#e5e5e5; --code:#f7f7f7; }
+    body { margin:0; font-family: Inter, Segoe UI, Arial, sans-serif; color:var(--fg); background:var(--bg); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 64px; }
+    h1,h2,h3 { line-height:1.25; }
+    p, li { line-height:1.65; }
+    .muted { color:var(--muted); }
+    .card { border:1px solid var(--line); border-radius:12px; padding:16px; margin:16px 0; }
+    code { background:var(--code); padding:2px 6px; border-radius:6px; }
+    .flow { font-weight:600; }
+    .lang { display:grid; gap:24px; grid-template-columns:1fr; }
+    @media (min-width: 960px){ .lang { grid-template-columns:1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Ultra Orchestration Whitepaper / 白皮书</h1>
+    <p class="muted">Backstory and methodology context for the open-source skill suite.</p>
+
+    <div class="card">
+      <h2>Canonical Process (Authoritative)</h2>
+      <p class="flow">Program → Milestone → Change → Slice</p>
+      <p class="flow">Intake → Plan → Dispatch → Execute → Review → QA → Deliver → Retro</p>
+      <p>
+        The execution authority remains in
+        <code>skills/ultra-orchestrator</code> and <code>skills/openspec-ultra-bridge</code>.
+        This page is historical and explanatory context.
+      </p>
+    </div>
+
+    <section class="lang">
+      <article class="card">
+        <h2>English</h2>
+        <p>
+          Ultra Orchestration started as an execution-centric orchestration framework focused on
+          deterministic delivery phases, quality gates, and review loops. As the project matured,
+          OpenSpec was integrated to provide a long-lived specification plane.
+        </p>
+        <p>
+          The final model is dual-plane:
+        </p>
+        <ul>
+          <li><strong>OpenSpec plane</strong>: stable specification and status ledger</li>
+          <li><strong>Ultra plane</strong>: execution control, QA evidence, and delivery governance</li>
+        </ul>
+        <p>
+          This repository keeps the runnable authority minimal and explicit,
+          while preserving historical context here on this page.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>中文</h2>
+        <p>
+          Ultra Orchestration 最初是一套“执行编排优先”的工程方法，强调阶段化交付、质量门禁与审查回环。
+          随着实践推进，后续引入 OpenSpec，形成了长期规格平面。
+        </p>
+        <p>最终形成双平面模型：</p>
+        <ul>
+          <li><strong>OpenSpec 平面</strong>：稳定规格与状态账本</li>
+          <li><strong>Ultra 平面</strong>：执行控制、QA 证据与交付治理</li>
+        </ul>
+        <p>
+          本仓库将“可执行权威”保持在最小集合，历史研发叙事则保留在本页面。
+        </p>
+      </article>
+    </section>
+
+    <div class="card">
+      <h3>Links</h3>
+      <ul>
+        <li><a href="https://github.com/keithhegit/ultra-orchestration">Repository</a></li>
+        <li><a href="./README.md">README</a></li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

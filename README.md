@@ -13,6 +13,10 @@ A curated open-source skill suite for disciplined AI-assisted software delivery 
 
 This repository is the source-of-truth for the skill system, references, and orchestration methodology.
 
+See the whitepaper/backstory page at:
+
+- `https://keithhegit.github.io/ultra-orchestration/docs.html`
+
 ## Quick Links
 
 - Methodology: [Skill Methodology (Core)](#skill-methodology-core)
@@ -51,6 +55,17 @@ CONTRIBUTING.md
 SECURITY.md
 CODE_OF_CONDUCT.md
 ```
+
+## Source of Truth
+
+Primary execution authority in this repository:
+
+- `skills/ultra-orchestrator`
+- `skills/openspec-ultra-bridge`
+
+These two skills define the canonical delivery contract.
+
+Historical R&D context is published as backstory in `docs.html` (GitHub Pages) and is not an execution authority.
 
 ## Skill Methodology (Core)
 
@@ -139,7 +154,6 @@ After each slice completion:
 - `safety-guard` — Safety guardrails and operation constraints
 - `deliver-and-retro` — Delivery assembly and retrospectives
 - `autoplan` — Fast planning pipeline
-- `codex_ultra_orchestration` — Whitepapers, examples, run artifacts
 
 ## How to Use in Cursor
 
@@ -301,7 +315,6 @@ slice 状态推进必须有验证证据。
 - `safety-guard`：安全护栏与约束
 - `deliver-and-retro`：交付汇总与复盘
 - `autoplan`：快速规划流水线
-- `codex_ultra_orchestration`：白皮书、示例、运行产物
 
 ## 在 Cursor 中使用
 
