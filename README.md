@@ -2,14 +2,18 @@
 
 中文说明见下方 **[中文](#中文)**。
 
-A curated skill suite for running software delivery with a dual-plane model:
+A curated open-source skill suite for disciplined AI-assisted software delivery using a dual-plane model:
 
-- **OpenSpec** as the specification plane (`Program -> Milestone -> Change -> Slice`)
-- **Ultra-Orchestrator** as the execution plane (`Intake -> Plan -> Dispatch -> Execute -> Review -> QA -> Deliver -> Retro`)
+- **OpenSpec specification plane**: `Program -> Milestone -> Change -> Slice`
+- **Ultra-Orchestrator execution plane**: `Intake -> Plan -> Dispatch -> Execute -> Review -> QA -> Deliver -> Retro`
 
-This repository stores reusable skill source code for the orchestration stack.
+This repository is the source-of-truth for the skill system, references, and orchestration methodology.
 
-## Repository Structure
+## License
+
+This project is licensed under the **Apache License 2.0**. See [`LICENSE`](./LICENSE).
+
+## Repository Layout
 
 ```text
 skills/
@@ -26,27 +30,29 @@ skills/
   safety-guard/
   spec-review/
   ultra-orchestrator/
+README.md
+LICENSE
 ```
 
-## Included Skills
+## Skill Methodology (Core)
 
-- `ultra-orchestrator` — Core control-plane orchestration skill
-- `openspec-ultra-bridge` — OpenSpec ↔ Ultra artifact bridge
-- `clarify-and-intake` — Requirement intake normalization
-- `decision-complete-planner` — Planning and decomposition
-- `dispatch-and-track` — Work package assignment and tracking
-- `code-review` — Engineering quality review
-- `spec-review` — Specification consistency review
-- `qa-verify` — Verification and QA gate execution
-- `risk-vetter` — Risk assessment before high-impact actions
-- `safety-guard` — Safety policies and guardrails
-- `deliver-and-retro` — Delivery summaries and retrospectives
-- `autoplan` — Fast planning pipeline mode
-- `codex_ultra_orchestration` — Program docs, examples, run artifacts
+### 1) Two-plane collaboration
 
-## Workflow Model
+- **OpenSpec** owns long-lived specification assets and status accounting.
+- **Ultra-Orchestrator** owns execution control, quality gates, and delivery evidence.
 
-Use this fixed phase order for non-trivial work:
+Both planes must stay synchronized. Neither replaces the other.
+
+### 2) Program model and delivery flow
+
+For product development, use this structure first:
+
+1. `Program`
+2. `Milestone`
+3. `Change`
+4. `Slice`
+
+Then execute each non-trivial task in this mandatory phase order:
 
 1. Intake
 2. Plan
@@ -57,17 +63,71 @@ Use this fixed phase order for non-trivial work:
 7. Deliver
 8. Retro
 
-Feedback loops are allowed when needed:
+### 3) What is the unit of progress?
 
-- `Review -> Execute`
-- `QA -> Execute`
-- `QA -> Plan`
+- `Change` = spec/progress accounting unit
+- `Slice` = implementation and verification unit
+
+Do **not** run milestone-wide coding without change/slice decomposition.
+
+### 4) Slice status contract
+
+Use canonical statuses only:
+
+- `slice_0_not_opened`
+- `slice_0_spec_ready`
+- `slice_1_completed`
+- `slice_2_in_progress`
+- `slice_3_qa_pending`
+- `slice_4_done`
+
+Advance slice status only with verification evidence.
+
+### 5) Bridge discipline (OpenSpec ↔ Ultra)
+
+Each opened change should include:
+
+- `proposal.md`
+- `tasks.md`
+- `ultra-bridge.md`
+
+`ultra-bridge.md` should contain at least:
+
+- `change_id`
+- `milestone`
+- `status`
+- `task_manifest_focus`
+- `work_package_scope`
+- `next_slice`
+
+After each slice completion:
+
+1. update `tasks.md`
+2. update `ultra-bridge.md`
+3. update program-facing status docs if counts/states changed
+4. record verification evidence
+
+## Included Skills
+
+- `ultra-orchestrator` — Core control-plane orchestration
+- `openspec-ultra-bridge` — OpenSpec ↔ Ultra artifact bridge
+- `clarify-and-intake` — Requirement normalization
+- `decision-complete-planner` — Decomposition and planning
+- `dispatch-and-track` — Work package dispatch and tracking
+- `code-review` — Engineering quality review
+- `spec-review` — Specification consistency review
+- `qa-verify` — QA verification gate
+- `risk-vetter` — Risk classification before high-impact actions
+- `safety-guard` — Safety guardrails and operation constraints
+- `deliver-and-retro` — Delivery assembly and retrospectives
+- `autoplan` — Fast planning pipeline
+- `codex_ultra_orchestration` — Whitepapers, examples, run artifacts
 
 ## How to Use in Cursor
 
 ### Global installation (recommended)
 
-Copy each skill folder under your Cursor global skills directory:
+Copy skill folders into Cursor global skills directory.
 
 - Windows: `C:\Users\<you>\.cursor\skills\`
 
@@ -77,40 +137,31 @@ Example:
 Copy-Item -Recurse -Force .\skills\ultra-orchestrator C:\Users\<you>\.cursor\skills\ultra-orchestrator
 ```
 
-After copying, restart Cursor or refresh the agent context so the skill list updates.
+Then restart Cursor or refresh agent context.
 
-### Project-local source of truth
+### Source and release workflow
 
-Keep this repository as the source code and documentation for your skills, and synchronize to global skills when releasing updates.
-
-## Design Principles
-
-- Keep OpenSpec and execution ledgers synchronized.
-- Use `change` for spec/progress accounting and `slice` for implementation progress.
-- Advance slice status only with verification evidence.
-- Prefer bounded owned-path slices over broad milestone-wide coding.
-
-## Versioning Guidance
-
-Recommended release process:
-
-1. Update skill source in this repository.
-2. Validate workflows on a real project.
-3. Tag a release (for example, `v1.0.0`).
-4. Sync released skills to global Cursor skills directory.
+1. edit/update skills in this repository
+2. validate in a real project
+3. commit + tag release
+4. sync released skill folders to global directory
 
 ---
 
 ## 中文
 
-这是一个用于工程交付编排的技能仓库，采用“双平面协作”模型：
+这是一个面向开源协作的技能仓库，用于“规范平面 + 编排平面”双轨交付。
 
-- **OpenSpec** 负责规格平面（`Program -> Milestone -> Change -> Slice`）
-- **Ultra-Orchestrator** 负责执行平面（`Intake -> Plan -> Dispatch -> Execute -> Review -> QA -> Deliver -> Retro`）
+- **OpenSpec 规格平面**：`Program -> Milestone -> Change -> Slice`
+- **Ultra-Orchestrator 编排平面**：`Intake -> Plan -> Dispatch -> Execute -> Review -> QA -> Deliver -> Retro`
 
-本仓库用于保存这套技能体系的可复用源码。
+本仓库是整套技能、参考资料和方法论的源码基线。
 
-## 目录结构
+## 许可证
+
+本项目采用 **Apache License 2.0**。见 [`LICENSE`](./LICENSE)。
+
+## 仓库结构
 
 ```text
 skills/
@@ -127,27 +178,29 @@ skills/
   safety-guard/
   spec-review/
   ultra-orchestrator/
+README.md
+LICENSE
 ```
 
-## 已包含技能
+## Skill 方法论（核心）
 
-- `ultra-orchestrator`：主编排控制平面
-- `openspec-ultra-bridge`：OpenSpec 与 Ultra 的桥接
-- `clarify-and-intake`：需求澄清与 intake 归一化
-- `decision-complete-planner`：任务规划与分解
-- `dispatch-and-track`：工作包派发与跟踪
-- `code-review`：工程质量审查
-- `spec-review`：规格一致性审查
-- `qa-verify`：QA 验证与门禁执行
-- `risk-vetter`：高风险动作前风险评估
-- `safety-guard`：安全策略与防护栏
-- `deliver-and-retro`：交付汇总与复盘
-- `autoplan`：快速规划流水线模式
-- `codex_ultra_orchestration`：程序文档、示例与运行产物
+### 1）双平面协作
 
-## 执行流程
+- **OpenSpec** 负责长期规格资产与状态核算。
+- **Ultra-Orchestrator** 负责执行控制、质量门禁、交付证据。
 
-中大型任务固定使用以下阶段顺序：
+两者必须同步，不能互相替代。
+
+### 2）项目作用流程（你提到的关键点）
+
+开发结构先按这条主线：
+
+1. `Program`
+2. `Milestone`
+3. `Change`
+4. `Slice`
+
+然后每个中大型任务按固定编排阶段执行：
 
 1. Intake
 2. Plan
@@ -158,19 +211,73 @@ skills/
 7. Deliver
 8. Retro
 
-允许按证据触发回环：
+### 3）进度核算单位
 
-- `Review -> Execute`
-- `QA -> Execute`
-- `QA -> Plan`
+- `Change`：规格/进度核算单位
+- `Slice`：实现与验证核算单位
+
+不要直接按整个 Milestone 粗放式开发。
+
+### 4）Slice 状态约定
+
+仅使用以下状态：
+
+- `slice_0_not_opened`
+- `slice_0_spec_ready`
+- `slice_1_completed`
+- `slice_2_in_progress`
+- `slice_3_qa_pending`
+- `slice_4_done`
+
+slice 状态推进必须有验证证据。
+
+### 5）Bridge 同步纪律（OpenSpec ↔ Ultra）
+
+每个已打开的 change 至少包含：
+
+- `proposal.md`
+- `tasks.md`
+- `ultra-bridge.md`
+
+`ultra-bridge.md` 至少包含：
+
+- `change_id`
+- `milestone`
+- `status`
+- `task_manifest_focus`
+- `work_package_scope`
+- `next_slice`
+
+每完成一个 slice 后，至少做这 4 件事：
+
+1. 更新 `tasks.md`
+2. 更新 `ultra-bridge.md`
+3. 若项目计数变化，更新总状态文档
+4. 记录验证证据
+
+## 包含技能
+
+- `ultra-orchestrator`：主编排控制平面
+- `openspec-ultra-bridge`：OpenSpec 与 Ultra 桥接
+- `clarify-and-intake`：需求澄清与归一化
+- `decision-complete-planner`：规划与拆解
+- `dispatch-and-track`：工作包派发与追踪
+- `code-review`：工程质量审查
+- `spec-review`：规格一致性审查
+- `qa-verify`：QA 验证门禁
+- `risk-vetter`：高风险动作前风险评估
+- `safety-guard`：安全护栏与约束
+- `deliver-and-retro`：交付汇总与复盘
+- `autoplan`：快速规划流水线
+- `codex_ultra_orchestration`：白皮书、示例、运行产物
 
 ## 在 Cursor 中使用
 
 ### 全局安装（推荐）
 
-将每个技能目录复制到 Cursor 全局技能目录：
+将技能目录复制到：
 
-- Windows：`C:\Users\<你>\.cursor\skills\`
+- `C:\Users\<你>\.cursor\skills\`
 
 示例：
 
@@ -178,22 +285,11 @@ skills/
 Copy-Item -Recurse -Force .\skills\ultra-orchestrator C:\Users\<你>\.cursor\skills\ultra-orchestrator
 ```
 
-复制后，建议重启 Cursor 或刷新 Agent 上下文，让技能列表重新索引。
+复制后重启 Cursor 或刷新 Agent 上下文。
 
-### 项目内源码管理
+### 源码与发布流程
 
-建议把本仓库作为技能源码与文档的唯一来源；发布时再同步到全局目录。
-
-## 设计原则
-
-- OpenSpec 账本与执行账本必须同步。
-- `change` 用于规格/进度核算，`slice` 用于实现进度核算。
-- slice 状态推进必须有验证证据支撑。
-- 优先采用“边界清晰的小切片”而非“大里程碑整包开发”。
-
-## 版本发布建议
-
-1. 在本仓库更新技能源码。
-2. 在真实项目中验证流程。
-3. 打版本标签（例如 `v1.0.0`）。
-4. 将发布版本同步到 Cursor 全局技能目录。
+1. 在本仓库更新技能源码
+2. 在真实项目中验证
+3. 提交并打 tag
+4. 同步发布版本到全局技能目录
