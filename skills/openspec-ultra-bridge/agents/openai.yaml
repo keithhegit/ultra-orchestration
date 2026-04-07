@@ -1,0 +1,7 @@
+﻿interface:
+  display_name: "OpenSpec Ultra Bridge"
+  short_description: "Bridge OpenSpec spec artifacts into Ultra-Orchestrator execution artifacts."
+  default_prompt: "Use $openspec-ultra-bridge to translate this OpenSpec change into Ultra-Orchestrator execution artifacts."
+
+policy:
+  allow_implicit_invocation: true

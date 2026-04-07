@@ -1,0 +1,7 @@
+interface:
+  display_name: "Dispatch And Track"
+  short_description: "Assign work packages and keep the execution ledger current."
+  default_prompt: "Use $dispatch-and-track to dispatch these work packages and update the run ledger."
+
+policy:
+  allow_implicit_invocation: true

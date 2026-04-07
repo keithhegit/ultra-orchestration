@@ -1,0 +1,7 @@
+interface:
+  display_name: "Decision Complete Planner"
+  short_description: "Create task graphs, dependencies, and executable plans."
+  default_prompt: "Use $decision-complete-planner to create a decision-complete plan from this intake."
+
+policy:
+  allow_implicit_invocation: true

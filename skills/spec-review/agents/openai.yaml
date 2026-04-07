@@ -1,0 +1,7 @@
+interface:
+  display_name: "Spec Review"
+  short_description: "Review plans for completeness, dependency gaps, and hidden risks."
+  default_prompt: "Use $spec-review to review this plan for completeness and hidden risks."
+
+policy:
+  allow_implicit_invocation: true

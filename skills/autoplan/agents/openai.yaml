@@ -1,0 +1,7 @@
+interface:
+  display_name: "Autoplan"
+  short_description: "Chain intake, planning, and spec review into one pass."
+  default_prompt: "Use $autoplan to build a refined decision-complete plan for this task."
+
+policy:
+  allow_implicit_invocation: true

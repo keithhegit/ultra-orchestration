@@ -1,0 +1,7 @@
+interface:
+  display_name: "QA Verify"
+  short_description: "Run scenario-based verification and regression checks."
+  default_prompt: "Use $qa-verify to validate the changed behavior and regression risk."
+
+policy:
+  allow_implicit_invocation: true

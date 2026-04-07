@@ -1,0 +1,7 @@
+interface:
+  display_name: "Deliver And Retro"
+  short_description: "Assemble final outputs, execution log, and retro notes."
+  default_prompt: "Use $deliver-and-retro to assemble the final deliverable and orchestration artifacts."
+
+policy:
+  allow_implicit_invocation: true

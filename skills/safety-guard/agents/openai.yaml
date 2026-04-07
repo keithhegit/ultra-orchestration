@@ -1,0 +1,7 @@
+interface:
+  display_name: "Safety Guard"
+  short_description: "Apply careful, freeze, and guard safety behaviors."
+  default_prompt: "Use $safety-guard to define execution guardrails for this run."
+
+policy:
+  allow_implicit_invocation: true

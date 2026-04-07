@@ -1,0 +1,7 @@
+interface:
+  display_name: "Risk Vetter"
+  short_description: "Classify tool and action risk before execution."
+  default_prompt: "Use $risk-vetter to classify the risk of these proposed actions and guardrails."
+
+policy:
+  allow_implicit_invocation: true

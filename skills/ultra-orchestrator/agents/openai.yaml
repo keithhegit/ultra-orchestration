@@ -1,0 +1,7 @@
+interface:
+  display_name: "Ultra Orchestrator"
+  short_description: "Run Codex work through a structured multi-stage orchestration flow."
+  default_prompt: "Use $ultra-orchestrator to coordinate this task through intake, planning, execution, review, QA, and delivery."
+
+policy:
+  allow_implicit_invocation: true

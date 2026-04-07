@@ -1,0 +1,7 @@
+interface:
+  display_name: "Clarify And Intake"
+  short_description: "Normalize requests into a structured intake artifact."
+  default_prompt: "Use $clarify-and-intake to turn this request into a structured intake artifact."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,12 @@
+{
+  "run_id": "run-20260325-001",
+  "current_stage": "intake",
+  "task_status": {},
+  "dependencies_satisfied": {},
+  "retry_counts": {},
+  "blockers": [],
+  "pending_review": [],
+  "integration_status": "not_started",
+  "max_retries": {},
+  "active_write_locks": {}
+}

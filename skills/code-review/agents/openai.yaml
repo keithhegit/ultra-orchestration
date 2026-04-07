@@ -1,0 +1,7 @@
+interface:
+  display_name: "Code Review"
+  short_description: "Review worker output for bugs, regressions, and missing tests."
+  default_prompt: "Use $code-review to review this implementation result before integration."
+
+policy:
+  allow_implicit_invocation: true
