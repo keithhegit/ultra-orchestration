@@ -3,82 +3,378 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ultra Orchestration Whitepaper / 白皮书</title>
+  <meta name="description" content="Ultra Orchestration open-source handbook and whitepaper" />
+  <title>Ultra Orchestration · Handbook / 白皮书</title>
   <style>
-    :root { --fg:#111; --muted:#666; --bg:#fff; --line:#e5e5e5; --code:#f7f7f7; }
-    body { margin:0; font-family: Inter, Segoe UI, Arial, sans-serif; color:var(--fg); background:var(--bg); }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 64px; }
-    h1,h2,h3 { line-height:1.25; }
-    p, li { line-height:1.65; }
-    .muted { color:var(--muted); }
-    .card { border:1px solid var(--line); border-radius:12px; padding:16px; margin:16px 0; }
-    code { background:var(--code); padding:2px 6px; border-radius:6px; }
-    .flow { font-weight:600; }
-    .lang { display:grid; gap:24px; grid-template-columns:1fr; }
-    @media (min-width: 960px){ .lang { grid-template-columns:1fr 1fr; } }
+    :root {
+      --bg: #f7fbff;
+      --panel: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #dbe7ff;
+      --brand: #2563eb;
+      --brand-soft: #dbeafe;
+      --ok: #0f766e;
+      --warn: #b45309;
+      --shadow: 0 10px 30px rgba(37, 99, 235, .08);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 100% -10%, #dbeafe 0%, transparent 55%),
+        radial-gradient(1000px 500px at -10% -20%, #e0f2fe 0%, transparent 52%),
+        var(--bg);
+      line-height: 1.65;
+    }
+    .container {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 28px 0 72px;
+    }
+    .hero {
+      background: linear-gradient(180deg, #ffffff, #f9fcff);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+    .badge {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: #1d4ed8;
+      background: var(--brand-soft);
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); line-height: 1.15; }
+    h2 { margin: 0 0 10px; font-size: 24px; line-height: 1.2; }
+    h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.25; }
+    p { margin: 0 0 10px; color: var(--muted); }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 9px 14px;
+      border: 1px solid #bfdbfe;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e40af;
+      background: #eff6ff;
+    }
+    .btn.primary {
+      color: #ffffff;
+      background: var(--brand);
+      border-color: #1d4ed8;
+    }
+    .grid { display: grid; gap: 14px; }
+    .grid.two { grid-template-columns: 1fr; }
+    .grid.three { grid-template-columns: 1fr; }
+    @media (min-width: 900px) {
+      .grid.two { grid-template-columns: 1fr 1fr; }
+      .grid.three { grid-template-columns: repeat(3, 1fr); }
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .kpi {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    .flow {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #f8fbff;
+      border: 1px dashed #bfdbfe;
+      color: #1e3a8a;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 8px 0;
+      font-size: 14px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    ul { margin: 8px 0 0 20px; padding: 0; color: var(--muted); }
+    li { margin: 5px 0; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #f1f5f9;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      padding: 2px 6px;
+      color: #1e3a8a;
+      font-size: .92em;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfeff;
+      color: var(--ok);
+      border: 1px solid #99f6e4;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    .warn {
+      background: #fff7ed;
+      color: var(--warn);
+      border-color: #fed7aa;
+    }
+    .foot {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #64748b;
+      text-align: center;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .table th, .table td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .table th {
+      background: #f8fbff;
+      color: #1e3a8a;
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <h1>Ultra Orchestration Whitepaper / 白皮书</h1>
-    <p class="muted">Backstory and methodology context for the open-source skill suite.</p>
-
-    <div class="card">
-      <h2>Canonical Process (Authoritative)</h2>
-      <p class="flow">Program → Milestone → Change → Slice</p>
-      <p class="flow">Intake → Plan → Dispatch → Execute → Review → QA → Deliver → Retro</p>
+  <main class="container">
+    <section class="hero">
+      <div class="badge">Open Source Handbook · Whitepaper</div>
+      <h1>Ultra Orchestration</h1>
       <p>
-        The execution authority remains in
-        <code>skills/ultra-orchestrator</code> and <code>skills/openspec-ultra-bridge</code>.
-        This page is historical and explanatory context.
+        A modern dual-plane delivery system for AI-assisted engineering.
+        This page is the public handbook and whitepaper for how to run the skill suite safely,
+        consistently, and at production quality.
       </p>
-    </div>
+      <div class="hero-actions">
+        <a class="btn primary" href="https://github.com/keithhegit/ultra-orchestration" target="_blank" rel="noreferrer">GitHub Repository</a>
+        <a class="btn" href="./README.md" target="_blank" rel="noreferrer">README</a>
+      </div>
+    </section>
 
-    <section class="lang">
+    <section class="grid two" aria-label="core process">
       <article class="card">
-        <h2>English</h2>
+        <div class="kpi">Authoritative Build Hierarchy</div>
+        <h2>OpenSpec Plane</h2>
+        <div class="flow">Program → Milestone → Change → Slice</div>
         <p>
-          Ultra Orchestration started as an execution-centric orchestration framework focused on
-          deterministic delivery phases, quality gates, and review loops. As the project matured,
-          OpenSpec was integrated to provide a long-lived specification plane.
+          OpenSpec manages long-lived specification truth, scope boundaries,
+          and progress accounting.
         </p>
-        <p>
-          The final model is dual-plane:
-        </p>
-        <ul>
-          <li><strong>OpenSpec plane</strong>: stable specification and status ledger</li>
-          <li><strong>Ultra plane</strong>: execution control, QA evidence, and delivery governance</li>
-        </ul>
-        <p>
-          This repository keeps the runnable authority minimal and explicit,
-          while preserving historical context here on this page.
-        </p>
+        <span class="status">Spec Source-of-Truth</span>
       </article>
 
       <article class="card">
-        <h2>中文</h2>
+        <div class="kpi">Execution State Machine</div>
+        <h2>Ultra Plane</h2>
+        <div class="flow">Intake → Plan → Dispatch → Execute → Review → QA → Deliver → Retro</div>
         <p>
-          Ultra Orchestration 最初是一套“执行编排优先”的工程方法，强调阶段化交付、质量门禁与审查回环。
-          随着实践推进，后续引入 OpenSpec，形成了长期规格平面。
+          Ultra-Orchestrator controls execution phases, review gates,
+          QA evidence, and delivery discipline.
         </p>
-        <p>最终形成双平面模型：</p>
-        <ul>
-          <li><strong>OpenSpec 平面</strong>：稳定规格与状态账本</li>
-          <li><strong>Ultra 平面</strong>：执行控制、QA 证据与交付治理</li>
-        </ul>
+        <span class="status">Execution Source-of-Truth</span>
+      </article>
+    </section>
+
+    <section class="card" aria-label="agent skills logic">
+      <h2>Agent-Skills Logic / 技能协作逻辑</h2>
+      <p>
+        The skill stack is role-based. One primary orchestrator skill coordinates specialized sibling skills by phase.
+      </p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>Primary Skill(s)</th>
+            <th>Responsibility</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Intake</td>
+            <td><code>clarify-and-intake</code></td>
+            <td>Normalize ambiguous requests into actionable intake artifacts.</td>
+          </tr>
+          <tr>
+            <td>Plan</td>
+            <td><code>decision-complete-planner</code>, <code>spec-review</code></td>
+            <td>Produce dependency-aware plans and pre-implementation spec checks.</td>
+          </tr>
+          <tr>
+            <td>Dispatch</td>
+            <td><code>dispatch-and-track</code></td>
+            <td>Assign work packages, enforce owned paths, track execution state.</td>
+          </tr>
+          <tr>
+            <td>Execute</td>
+            <td><code>ultra-orchestrator</code> + worker role</td>
+            <td>Implement bounded slices with explicit constraints.</td>
+          </tr>
+          <tr>
+            <td>Review</td>
+            <td><code>code-review</code>, <code>spec-review</code></td>
+            <td>Run engineering and spec consistency gates with evidence.</td>
+          </tr>
+          <tr>
+            <td>QA</td>
+            <td><code>qa-verify</code></td>
+            <td>Validate behavior and regressions against acceptance checks.</td>
+          </tr>
+          <tr>
+            <td>Deliver</td>
+            <td><code>deliver-and-retro</code></td>
+            <td>Assemble final deliverable and progress reporting artifacts.</td>
+          </tr>
+          <tr>
+            <td>Retro</td>
+            <td><code>deliver-and-retro</code></td>
+            <td>Capture process friction and workflow improvements.</td>
+          </tr>
+          <tr>
+            <td>Cross-cutting Safety</td>
+            <td><code>risk-vetter</code>, <code>safety-guard</code>, <code>autoplan</code></td>
+            <td>Risk classification, safety constraints, and accelerated planning mode.</td>
+          </tr>
+          <tr>
+            <td>Bridge Layer</td>
+            <td><code>openspec-ultra-bridge</code></td>
+            <td>Synchronize OpenSpec artifacts with Ultra execution artifacts and slice ledger updates.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="grid three" aria-label="principles">
+      <article class="card">
+        <h3>Single Authority</h3>
         <p>
-          本仓库将“可执行权威”保持在最小集合，历史研发叙事则保留在本页面。
+          Runtime authority is intentionally minimal:
+          <code>skills/ultra-orchestrator</code> + <code>skills/openspec-ultra-bridge</code>.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Slice Discipline</h3>
+        <p>
+          Implement and verify in slices, not milestone-sized coding waves.
+          Advance status only with evidence.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Bridge Synchronization</h3>
+        <p>
+          For each change: keep <code>proposal.md</code>, <code>tasks.md</code>, and <code>ultra-bridge.md</code> synchronized.
         </p>
       </article>
     </section>
 
-    <div class="card">
-      <h3>Links</h3>
+    <section class="card" aria-label="backstory">
+      <h2>Backstory / 研发演进说明</h2>
+      <p>
+        Ultra Orchestration started as a self-designed execution methodology focused on deterministic
+        orchestration, strict phase control, and evidence-based delivery.
+      </p>
+      <p>
+        <strong>Why iterative evolution?</strong> In real coding-agent production runs, we repeatedly observed
+        context collapse, hidden regressions, write-conflict risks, and weak traceability when workflows were
+        driven by long, monolithic prompts alone.
+      </p>
+      <p>
+        This led to a practical design choice inherited from the original CUO whitepaper:
+        <em>before pursuing full autonomous multi-agent scale, first build a structured, role-isolated,
+        rollback-capable, auditable orchestration foundation.</em>
+      </p>
+      <p>
+        <strong>What is the spec-coding trend?</strong> Modern AI engineering is moving from prompt-only execution
+        toward <em>spec-first development</em>: durable specs, explicit change ledgers, bounded slices, and
+        evidence-gated status advancement. This improves team handoff quality and release confidence.
+      </p>
+      <p>
+        As this trend became more influential, Ultra integrated OpenSpec to strengthen long-lived
+        specification assets and change-level governance.
+      </p>
+      <p>
+        Today, the fusion model is explicit: OpenSpec governs specification truth; Ultra governs
+        execution truth.
+      </p>
+      <p>
+        The original <code>codex_ultra_orchestration</code> material remains historical R&amp;D context,
+        preserved as backstory rather than executable authority.
+      </p>
+      <div class="flow">Program → Milestone → Change → Slice</div>
+      <div class="flow">Intake → Plan → Dispatch → Execute → Review → QA → Deliver → Retro</div>
+      <span class="status warn">Historical context only · 非执行权威</span>
+      <h3 style="margin-top:14px;">Open-source Attribution / 开源致谢</h3>
       <ul>
-        <li><a href="https://github.com/keithhegit/ultra-orchestration">Repository</a></li>
-        <li><a href="./README.md">README</a></li>
+        <li>
+          OpenSpec project (upstream):
+          <a href="https://github.com/openspec" target="_blank" rel="noreferrer">https://github.com/openspec</a>
+        </li>
+        <li>
+          This repository acknowledges OpenSpec authors and maintainers for the open-source specification model
+          that informed the bridge integration.
+        </li>
       </ul>
-    </div>
+    </section>
+
+    <section class="grid two" aria-label="quickstart">
+      <article class="card">
+        <h3>Quick Start (EN)</h3>
+        <ul>
+          <li>Pick or open a <code>Program</code>.</li>
+          <li>Break into <code>Milestone -> Change -> Slice</code>.</li>
+          <li>Run the 8 execution phases in order.</li>
+          <li>Bridge-sync OpenSpec and Ultra artifacts after each slice.</li>
+          <li>Report evidence before advancing status.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>快速上手（中文）</h3>
+        <ul>
+          <li>先确定或新建 <code>Program</code>。</li>
+          <li>拆解为 <code>Milestone -> Change -> Slice</code>。</li>
+          <li>按 8 阶段顺序执行。</li>
+          <li>每个 slice 完成后做 OpenSpec + Ultra 双平面同步。</li>
+          <li>有验证证据再推进状态。</li>
+        </ul>
+      </article>
+    </section>
+
+    <p class="foot">Ultra Orchestration · Open-source handbook page for GitHub Pages</p>
   </main>
 </body>
 </html>
