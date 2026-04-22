@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra Review"
+  short_description: "Spec and engineering review gates"
+  default_prompt: "Use $ultra-review to review orchestrated results for correctness, evidence, and risk."

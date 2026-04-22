@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra QA"
+  short_description: "Scenario-based static and dynamic QA"
+  default_prompt: "Use $ultra-qa to verify behavior with explicit scenarios, evidence, and pass/fail outcomes."

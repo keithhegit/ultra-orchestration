@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra Execution Control"
+  short_description: "Dispatch, locks, and ledger control"
+  default_prompt: "Use $ultra-execution-control to dispatch work packages and manage safe execution state."

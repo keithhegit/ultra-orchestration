@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra Brainstorming"
+  short_description: "Design-first discovery before coding"
+  default_prompt: "Use $ultra-brainstorming to turn a vague request into an approved engineering spec."

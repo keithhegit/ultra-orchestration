@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra VNext Core"
+  short_description: "Shared contracts and runtime rules"
+  default_prompt: "Use $ultra-vnext-core to enforce shared orchestration contracts and runtime rules."

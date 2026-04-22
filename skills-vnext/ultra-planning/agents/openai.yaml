@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra Planning"
+  short_description: "Decision-complete plans with DAGs"
+  default_prompt: "Use $ultra-planning to produce a task graph with dependencies, path ownership, and acceptance checks."

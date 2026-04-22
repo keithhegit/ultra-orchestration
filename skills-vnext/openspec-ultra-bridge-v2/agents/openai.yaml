@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenSpec Ultra Bridge V2"
+  short_description: "Map OpenSpec artifacts into Ultra"
+  default_prompt: "Use $openspec-ultra-bridge-v2 to convert OpenSpec artifacts into Ultra execution contracts and logs."

@@ -2,32 +2,150 @@
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 [![Repo Status](https://img.shields.io/badge/status-active-success)](#)
-[![Method](https://img.shields.io/badge/method-OpenSpec%20%2B%20Ultra-informational)](#skill-methodology-core)
+[![Method](https://img.shields.io/badge/method-OpenSpec%20%2B%20Ultra-informational)](#methodology-core)
 
-中文说明见下方 **[中文](#中文)**。
+[English](#english) | [中文](#中文)
 
-A curated open-source skill suite for disciplined AI-assisted software delivery using a dual-plane model:
+## English
 
-- **OpenSpec specification plane**: `Program -> Milestone -> Change -> Slice`
-- **Ultra-Orchestrator execution plane**: `Intake -> Plan -> Dispatch -> Execute -> Review -> QA -> Deliver -> Retro`
+Ultra Orchestration is an open-source skill repository for disciplined
+AI-assisted software delivery.
 
-This repository is the source-of-truth for the skill system, references, and orchestration methodology.
+It keeps the original repository theme intact:
 
-See the whitepaper/backstory page at:
+- **OpenSpec specification plane** for long-lived program, milestone, and change assets
+- **Ultra-Orchestrator execution plane** for intake, planning, dispatch, execution,
+  review, QA, delivery, and retro
 
-- `https://keithhegit.github.io/ultra-orchestration/docs.html`
+This repository is the source of truth for the skill system, references, helper
+scripts, and orchestration methodology.
 
-## Quick Links
+Backstory and whitepaper page:
 
-- Methodology: [Skill Methodology (Core)](#skill-methodology-core)
-- Install in Cursor: [How to Use in Cursor](#how-to-use-in-cursor)
-- Contributing: [CONTRIBUTING.md](./CONTRIBUTING.md)
-- Security: [SECURITY.md](./SECURITY.md)
-- Code of Conduct: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- [GitHub Pages / docs.html](https://keithhegit.github.io/ultra-orchestration/docs.html)
 
-## License
+## What Is Included
 
-This project is licensed under the **Apache License 2.0**. See [`LICENSE`](./LICENSE).
+### Stable core skill suite
+
+Under [`skills/`](./skills/):
+
+- `ultra-orchestrator`
+- `openspec-ultra-bridge`
+- `clarify-and-intake`
+- `decision-complete-planner`
+- `dispatch-and-track`
+- `spec-review`
+- `code-review`
+- `qa-verify`
+- `risk-vetter`
+- `safety-guard`
+- `deliver-and-retro`
+- `autoplan`
+
+These remain the canonical stable delivery contract.
+
+### vNext experimental skill suite
+
+Under [`skills-vnext/`](./skills-vnext/):
+
+- `ultra-vnext-core`
+- `ultra-brainstorming`
+- `ultra-planning`
+- `ultra-execution-control`
+- `ultra-review`
+- `ultra-qa`
+- `openspec-ultra-bridge-v2`
+
+This track is designed to absorb the strongest ideas from:
+
+- `obra/superpowers`
+  design-first workflow, one-question-at-a-time clarification, and hard gates
+- `OpenSpec`
+  durable proposal/design/tasks/archive assets
+- `gstack`
+  role discipline and structured delivery flow
+- `forrestchang/andrej-karpathy-skills`
+  simple high-signal engineering principles
+- `oh-my-codex`
+  runtime awareness, orchestration traces, and heavier workflow posture
+
+The vNext goal is not to replace Ultra's theme or control plane. It upgrades the
+same Ultra direction with:
+
+- finite-state-machine loopbacks instead of a fragile linear waterfall
+- context-firewall handoff through artifacts, not full chat inheritance
+- DAG plus write-lock dispatch rules for safe parallelism
+- host-driven ledger ownership
+- richer design and planning prompts before implementation
+
+## Methodology Core
+
+### 1. Two-plane collaboration
+
+- **OpenSpec** owns long-lived specification assets and status accounting
+- **Ultra-Orchestrator** owns execution control, quality gates, and delivery evidence
+
+Neither replaces the other. They stay synchronized.
+
+### 2. Delivery structure
+
+For non-trivial work, use:
+
+1. `Program`
+2. `Milestone`
+3. `Change`
+4. `Slice`
+
+Then run execution in this phase order:
+
+1. Intake
+2. Plan
+3. Dispatch
+4. Execute
+5. Review
+6. QA
+7. Deliver
+8. Retro
+
+### 3. Progress accounting
+
+- `Change` is the specification and planning unit
+- `Slice` is the implementation and verification unit
+
+Do not run milestone-wide engineering without change and slice decomposition.
+
+### 4. Slice status discipline
+
+Canonical slice states:
+
+- `slice_0_not_opened`
+- `slice_0_spec_ready`
+- `slice_1_completed`
+- `slice_2_in_progress`
+- `slice_3_qa_pending`
+- `slice_4_done`
+
+Advance slice status only with verification evidence.
+
+### 5. Bridge discipline
+
+Each active change should include:
+
+- `proposal.md`
+- `tasks.md`
+- `ultra-bridge.md`
+
+Recommended for richer changes:
+
+- `design.md`
+
+After each completed slice:
+
+1. update `tasks.md`
+2. update `ultra-bridge.md`
+3. update any program-facing status rollups if counts changed
+4. record verification evidence
 
 ## Repository Layout
 
@@ -39,7 +157,6 @@ skills/
   autoplan/
   clarify-and-intake/
   code-review/
-  codex_ultra_orchestration/
   decision-complete-planner/
   deliver-and-retro/
   dispatch-and-track/
@@ -49,6 +166,17 @@ skills/
   safety-guard/
   spec-review/
   ultra-orchestrator/
+skills-vnext/
+  ultra-vnext-core/
+  ultra-brainstorming/
+  ultra-planning/
+  ultra-execution-control/
+  ultra-review/
+  ultra-qa/
+  openspec-ultra-bridge-v2/
+docs/
+  ultra-vnext-pilot-guide-CN.md
+docs.html
 README.md
 LICENSE
 CONTRIBUTING.md
@@ -56,197 +184,137 @@ SECURITY.md
 CODE_OF_CONDUCT.md
 ```
 
-## Source of Truth
+## How To Use
 
-Primary execution authority in this repository:
+### Install the stable suite
 
-- `skills/ultra-orchestrator`
-- `skills/openspec-ultra-bridge`
+Copy folders from [`skills/`](./skills/) into your global skill directory.
 
-These two skills define the canonical delivery contract.
-
-Historical R&D context is published as backstory in `docs.html` (GitHub Pages) and is not an execution authority.
-
-## Skill Methodology (Core)
-
-### 1) Two-plane collaboration
-
-- **OpenSpec** owns long-lived specification assets and status accounting.
-- **Ultra-Orchestrator** owns execution control, quality gates, and delivery evidence.
-
-Both planes must stay synchronized. Neither replaces the other.
-
-### 2) Program model and delivery flow
-
-For product development, use this structure first:
-
-1. `Program`
-2. `Milestone`
-3. `Change`
-4. `Slice`
-
-Then execute each non-trivial task in this mandatory phase order:
-
-1. Intake
-2. Plan
-3. Dispatch
-4. Execute
-5. Review
-6. QA
-7. Deliver
-8. Retro
-
-### 3) What is the unit of progress?
-
-- `Change` = spec/progress accounting unit
-- `Slice` = implementation and verification unit
-
-Do **not** run milestone-wide coding without change/slice decomposition.
-
-### 4) Slice status contract
-
-Use canonical statuses only:
-
-- `slice_0_not_opened`
-- `slice_0_spec_ready`
-- `slice_1_completed`
-- `slice_2_in_progress`
-- `slice_3_qa_pending`
-- `slice_4_done`
-
-Advance slice status only with verification evidence.
-
-### 5) Bridge discipline (OpenSpec ↔ Ultra)
-
-Each opened change should include:
-
-- `proposal.md`
-- `tasks.md`
-- `ultra-bridge.md`
-
-`ultra-bridge.md` should contain at least:
-
-- `change_id`
-- `milestone`
-- `status`
-- `task_manifest_focus`
-- `work_package_scope`
-- `next_slice`
-
-After each slice completion:
-
-1. update `tasks.md`
-2. update `ultra-bridge.md`
-3. update program-facing status docs if counts/states changed
-4. record verification evidence
-
-## Included Skills
-
-- `ultra-orchestrator` — Core control-plane orchestration
-- `openspec-ultra-bridge` — OpenSpec ↔ Ultra artifact bridge
-- `clarify-and-intake` — Requirement normalization
-- `decision-complete-planner` — Decomposition and planning
-- `dispatch-and-track` — Work package dispatch and tracking
-- `code-review` — Engineering quality review
-- `spec-review` — Specification consistency review
-- `qa-verify` — QA verification gate
-- `risk-vetter` — Risk classification before high-impact actions
-- `safety-guard` — Safety guardrails and operation constraints
-- `deliver-and-retro` — Delivery assembly and retrospectives
-- `autoplan` — Fast planning pipeline
-
-## How to Use in Cursor
-
-### Global installation (recommended)
-
-Copy skill folders into Cursor global skills directory.
-
-- Windows: `C:\Users\<you>\.cursor\skills\`
-
-Example:
+Example on Windows:
 
 ```powershell
 Copy-Item -Recurse -Force .\skills\ultra-orchestrator C:\Users\<you>\.cursor\skills\ultra-orchestrator
 ```
 
-Then restart Cursor or refresh agent context.
+### Evaluate the vNext suite
 
-### Source and release workflow
+Use [`skills-vnext/`](./skills-vnext/) as an experimental track for pilot work.
 
-1. edit/update skills in this repository
-2. validate in a real project
-3. commit + tag release
-4. sync released skill folders to global directory
+The current recommended pilot is:
+
+- use OpenSpec as the long-lived spec layer
+- keep Ultra as the control plane
+- validate one bounded change at a time
+
+Chinese pilot guide:
+
+- [docs/ultra-vnext-pilot-guide-CN.md](./docs/ultra-vnext-pilot-guide-CN.md)
+
+## Source And Release Workflow
+
+1. update or add skills in this repository
+2. validate the workflow in a real project
+3. commit and tag a release if needed
+4. sync released skills into your global skill directory
+
+## License
+
+This project is licensed under the **Apache License 2.0**.
+See [LICENSE](./LICENSE).
 
 ---
 
 ## 中文
 
-这是一个面向开源协作的技能仓库，用于“规范平面 + 编排平面”双轨交付。
+Ultra Orchestration 是一个面向 AI 辅助软件交付的开源技能仓库。
 
-- **OpenSpec 规格平面**：`Program -> Milestone -> Change -> Slice`
-- **Ultra-Orchestrator 编排平面**：`Intake -> Plan -> Dispatch -> Execute -> Review -> QA -> Deliver -> Retro`
+本仓库保持原有主题不变，核心仍然是“双平面协作”：
 
-本仓库是整套技能、参考资料和方法论的源码基线。
+- **OpenSpec 规格平面**：负责长期规格资产、里程碑、变更与归档
+- **Ultra-Orchestrator 编排平面**：负责 Intake、Plan、Dispatch、Execute、
+  Review、QA、Deliver、Retro 的执行控制
 
-## 快速链接
+仓库继续作为技能、参考资料、辅助脚本和方法论的源码基线。
 
-- 方法论：[`Skill Methodology (Core)`](#skill-methodology-core)
-- 安装方式：[`How to Use in Cursor`](#how-to-use-in-cursor)
-- 贡献指南：[`CONTRIBUTING.md`](./CONTRIBUTING.md)
-- 安全策略：[`SECURITY.md`](./SECURITY.md)
-- 行为准则：[`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md)
+白皮书与背景页：
 
-## 许可证
+- [GitHub Pages / docs.html](https://keithhegit.github.io/ultra-orchestration/docs.html)
 
-本项目采用 **Apache License 2.0**。见 [`LICENSE`](./LICENSE)。
+## 当前包含两条技能线
 
-## 仓库结构
+### 1. 稳定主线
 
-```text
-.github/
-  ISSUE_TEMPLATE/
-  workflows/
-skills/
-  autoplan/
-  clarify-and-intake/
-  code-review/
-  codex_ultra_orchestration/
-  decision-complete-planner/
-  deliver-and-retro/
-  dispatch-and-track/
-  openspec-ultra-bridge/
-  qa-verify/
-  risk-vetter/
-  safety-guard/
-  spec-review/
-  ultra-orchestrator/
-README.md
-LICENSE
-CONTRIBUTING.md
-SECURITY.md
-CODE_OF_CONDUCT.md
-```
+位于 [`skills/`](./skills/)：
 
-## Skill 方法论（核心）
+- `ultra-orchestrator`
+- `openspec-ultra-bridge`
+- `clarify-and-intake`
+- `decision-complete-planner`
+- `dispatch-and-track`
+- `spec-review`
+- `code-review`
+- `qa-verify`
+- `risk-vetter`
+- `safety-guard`
+- `deliver-and-retro`
+- `autoplan`
 
-### 1）双平面协作
+这条线仍然是当前仓库的稳定交付主线。
 
-- **OpenSpec** 负责长期规格资产与状态核算。
-- **Ultra-Orchestrator** 负责执行控制、质量门禁、交付证据。
+### 2. vNext 实验线
 
-两者必须同步，不能互相替代。
+位于 [`skills-vnext/`](./skills-vnext/)：
 
-### 2）项目作用流程（关键）
+- `ultra-vnext-core`
+- `ultra-brainstorming`
+- `ultra-planning`
+- `ultra-execution-control`
+- `ultra-review`
+- `ultra-qa`
+- `openspec-ultra-bridge-v2`
 
-开发结构先按这条主线：
+这条线吸收了多种优秀方法，但不改变仓库主题，也不替代 Ultra 的控制平面定位。
+
+重点吸收来源：
+
+- `obra/superpowers`
+  强化 design-first、逐问澄清、hard gate
+- `OpenSpec`
+  强化 proposal / design / tasks / archive 的长期规格资产
+- `gstack`
+  强化角色纪律与阶段化交付
+- `forrestchang/andrej-karpathy-skills`
+  强化高密度、低噪声的工程原则
+- `oh-my-codex`
+  强化运行时意识、轨迹记录与工程化工作流姿态
+
+vNext 的主要升级点：
+
+- 用有限状态机闭环替代脆弱的线性瀑布流
+- 用 artifact handoff 替代全文聊天历史继承
+- 用 DAG + 写锁约束来定义安全并发
+- 用 host-driven ledger 取代大 JSON 由模型直接重写
+- 在编码前强化 design 与 planning 提示质量
+
+## 方法论核心
+
+### 1. 双平面协作
+
+- **OpenSpec** 负责长期规格资产与状态核算
+- **Ultra-Orchestrator** 负责执行控制、质量门禁与交付证据
+
+两者同步协作，互不替代。
+
+### 2. 项目结构与执行流
+
+对非平凡任务，先按以下结构组织：
 
 1. `Program`
 2. `Milestone`
 3. `Change`
 4. `Slice`
 
-然后每个中大型任务按固定编排阶段执行：
+然后按以下阶段执行：
 
 1. Intake
 2. Plan
@@ -257,16 +325,16 @@ CODE_OF_CONDUCT.md
 7. Deliver
 8. Retro
 
-### 3）进度核算单位
+### 3. 进度核算单位
 
-- `Change`：规格/进度核算单位
-- `Slice`：实现与验证核算单位
+- `Change` 是规格与计划单位
+- `Slice` 是实现与验证单位
 
-不要直接按整个 Milestone 粗放式开发。
+不要直接以整段 Milestone 作为粗粒度开发单位。
 
-### 4）Slice 状态约定
+### 4. Slice 状态纪律
 
-仅使用以下状态：
+使用以下标准状态：
 
 - `slice_0_not_opened`
 - `slice_0_spec_ready`
@@ -275,66 +343,61 @@ CODE_OF_CONDUCT.md
 - `slice_3_qa_pending`
 - `slice_4_done`
 
-slice 状态推进必须有验证证据。
+只有在存在验证证据时，才推进 slice 状态。
 
-### 5）Bridge 同步纪律（OpenSpec ↔ Ultra）
+### 5. Bridge 同步纪律
 
-每个已打开的 change 至少包含：
+每个活跃 change 建议至少包含：
 
 - `proposal.md`
 - `tasks.md`
 - `ultra-bridge.md`
 
-`ultra-bridge.md` 至少包含：
+更复杂的变更建议补上：
 
-- `change_id`
-- `milestone`
-- `status`
-- `task_manifest_focus`
-- `work_package_scope`
-- `next_slice`
+- `design.md`
 
-每完成一个 slice 后，至少做这 4 件事：
+每完成一个 slice，至少同步四件事：
 
 1. 更新 `tasks.md`
 2. 更新 `ultra-bridge.md`
-3. 若项目计数变化，更新总状态文档
+3. 如果项目级统计变化，更新汇总状态文档
 4. 记录验证证据
 
-## 包含技能
+## 如何使用
 
-- `ultra-orchestrator`：主编排控制平面
-- `openspec-ultra-bridge`：OpenSpec 与 Ultra 桥接
-- `clarify-and-intake`：需求澄清与归一化
-- `decision-complete-planner`：规划与拆解
-- `dispatch-and-track`：工作包派发与追踪
-- `code-review`：工程质量审查
-- `spec-review`：规格一致性审查
-- `qa-verify`：QA 验证门禁
-- `risk-vetter`：高风险动作前风险评估
-- `safety-guard`：安全护栏与约束
-- `deliver-and-retro`：交付汇总与复盘
-- `autoplan`：快速规划流水线
+### 安装稳定主线
 
-## 在 Cursor 中使用
+把 [`skills/`](./skills/) 里的技能目录复制到你的全局技能目录。
 
-### 全局安装（推荐）
-
-将技能目录复制到：
-
-- `C:\Users\<你>\.cursor\skills\`
-
-示例：
+Windows 示例：
 
 ```powershell
 Copy-Item -Recurse -Force .\skills\ultra-orchestrator C:\Users\<你>\.cursor\skills\ultra-orchestrator
 ```
 
-复制后重启 Cursor 或刷新 Agent 上下文。
+### 试跑 vNext
 
-### 源码与发布流程
+把 [`skills-vnext/`](./skills-vnext/) 当作实验线使用，先在真实项目里做 pilot。
 
-1. 在本仓库更新技能源码
+推荐 pilot 方法：
+
+- 用 OpenSpec 做长期规格层
+- 用 Ultra 做控制平面
+- 一次只验证一个边界清晰的 change
+
+中文试跑说明：
+
+- [docs/ultra-vnext-pilot-guide-CN.md](./docs/ultra-vnext-pilot-guide-CN.md)
+
+## 源码与发布流程
+
+1. 在本仓库中更新技能
 2. 在真实项目中验证
-3. 提交并打 tag
-4. 同步发布版本到全局技能目录
+3. 提交并按需要打 tag
+4. 将已发布版本同步到全局技能目录
+
+## License
+
+本项目使用 **Apache License 2.0**。
+详见 [LICENSE](./LICENSE)。
