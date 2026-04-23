@@ -1,15 +1,14 @@
-# Codex Ultra Orchestration vNext Skill Tree
+# Ultra Orchestration vNext Skill Tree
 
-This directory is an isolated vNext workspace for evolving Ultra-Orchestrator
-without modifying the stable workspace-level skills under
-`D:\Codex_workspace\.agents\skills`.
+This directory contains the vNext preview suite for Ultra Orchestration. The
+skills are compatible with agents that support `SKILL.md`-based Agent Skills.
 
 ## Goals
 
-- keep the current global skills stable
-- prototype a stronger prompt and contract system for Codex App on Windows
-- absorb the best ideas from Superpowers, OpenSpec, gstack, karpathy-style
-  guidelines, and OMX without replacing Ultra as the control plane
+- provide a stricter orchestration protocol for complex engineering work
+- keep specification, execution, review, QA, risk, and delivery roles explicit
+- support artifact-driven handoff instead of full chat-history inheritance
+- make risk decisions, QA evidence, and final delivery logs auditable
 
 ## Skills
 
@@ -22,7 +21,7 @@ without modifying the stable workspace-level skills under
 - `ultra-execution-control`
   dispatch, lock enforcement, execution tracking, and blocker routing
 - `ultra-review`
-  spec and engineering review with explicit reject or reroute decisions
+  spec and engineering review with explicit accept, reject, or reroute decisions
 - `ultra-qa`
   scenario-based static and dynamic QA with pass or fail outcomes
 - `ultra-risk-vetting`
@@ -34,19 +33,22 @@ without modifying the stable workspace-level skills under
 
 ## Stable To vNext Mapping
 
-| vNext skill | Stable relationship | Replacement type |
+| vNext skill | Stable relationship | Migration type |
 |---|---|---|
-| `ultra-vnext-core` | `ultra-orchestrator` | partial replacement plus shared kernel |
-| `ultra-brainstorming` | `clarify-and-intake` + early `autoplan` | enhanced replacement |
-| `ultra-planning` | `decision-complete-planner` | direct replacement |
-| `ultra-execution-control` | `dispatch-and-track` + part of `safety-guard` | enhanced integration |
-| `ultra-review` | `spec-review` + `code-review` | merged replacement |
-| `ultra-qa` | `qa-verify` | direct replacement |
-| `ultra-risk-vetting` | `risk-vetter` + approval part of `safety-guard` | direct replacement |
-| `ultra-delivery` | `deliver-and-retro` | direct replacement |
-| `openspec-ultra-bridge-v2` | `openspec-ultra-bridge` | enhanced replacement |
+| `ultra-vnext-core` | `ultra-orchestrator` | shared kernel |
+| `ultra-brainstorming` | `clarify-and-intake` + early `autoplan` | enhanced version |
+| `ultra-planning` | `decision-complete-planner` | direct counterpart |
+| `ultra-execution-control` | `dispatch-and-track` + part of `safety-guard` | integrated version |
+| `ultra-review` | `spec-review` + `code-review` | merged version |
+| `ultra-qa` | `qa-verify` | direct counterpart |
+| `ultra-risk-vetting` | `risk-vetter` + approval part of `safety-guard` | direct counterpart |
+| `ultra-delivery` | `deliver-and-retro` | direct counterpart |
+| `openspec-ultra-bridge-v2` | `openspec-ultra-bridge` | enhanced version |
 
-## Current Scope
+## Usage
 
-This tree is intended to be copied into a future repo or merged into the remote
-`ultra-orchestration` repository after pilot validation.
+Install these folders into your target agent's documented skills directory, or
+ask the agent to read individual `SKILL.md` files from this repository.
+
+For full installation and startup prompts, see the root
+[`README.md`](../README.md).

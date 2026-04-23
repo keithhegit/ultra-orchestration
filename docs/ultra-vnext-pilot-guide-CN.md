@@ -6,7 +6,7 @@
 
 vNext 技能树位置：
 
-`D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext`
+`<REPO_ROOT>\skills-vnext`
 
 ## 本轮包含的 vNext 技能
 
@@ -43,31 +43,31 @@ vNext 技能树位置：
 
 推荐 change：
 
-`D:\Codex_workspace\teammate\app-repo\openspec\changes\desktop-runtime-foundation`
+`<PROJECT_ROOT>\openspec\changes\<change-id>`
 
 ## 已验证的本地命令
 
 初始化 run：
 
 ```powershell
-python D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-vnext-core\scripts\new_run.py `
-  D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\runs-vnext `
+python <REPO_ROOT>\skills-vnext\ultra-vnext-core\scripts\new_run.py `
+  <PROJECT_ROOT>\runs-vnext `
   --run-id run-001
 ```
 
 桥接 OpenSpec change：
 
 ```powershell
-python D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\openspec-ultra-bridge-v2\scripts\bridge_change.py `
-  D:\Codex_workspace\teammate\app-repo\openspec\changes\desktop-runtime-foundation `
-  D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\runs-vnext\bridge-output
+python <REPO_ROOT>\skills-vnext\openspec-ultra-bridge-v2\scripts\bridge_change.py `
+  <PROJECT_ROOT>\openspec\changes\<change-id> `
+  <PROJECT_ROOT>\runs-vnext\bridge-output
 ```
 
 校验核心 contract：
 
 ```powershell
-python D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-vnext-core\scripts\validate_contracts.py `
-  D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\runs-vnext\run-001\ledger.json `
+python <REPO_ROOT>\skills-vnext\ultra-vnext-core\scripts\validate_contracts.py `
+  <PROJECT_ROOT>\runs-vnext\run-001\ledger.json `
   --kind executionledger
 ```
 
@@ -79,10 +79,10 @@ python D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-v
 
 ```text
 请读取并使用：
-1. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\openspec-ultra-bridge-v2\SKILL.md
-2. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-vnext-core\SKILL.md
+1. <REPO_ROOT>\skills-vnext\openspec-ultra-bridge-v2\SKILL.md
+2. <REPO_ROOT>\skills-vnext\ultra-vnext-core\SKILL.md
 
-然后对 D:\Codex_workspace\teammate\app-repo\openspec\changes\desktop-runtime-foundation
+然后对 <PROJECT_ROOT>\openspec\changes\<change-id>
 执行 bridge + run 初始化 + planning 准备。
 ```
 
@@ -90,17 +90,17 @@ python D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-v
 
 ```text
 请依次读取并使用：
-1. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-brainstorming\SKILL.md
-2. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-planning\SKILL.md
-3. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\openspec-ultra-bridge-v2\SKILL.md
-4. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-risk-vetting\SKILL.md
-5. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-execution-control\SKILL.md
-6. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-review\SKILL.md
-7. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-qa\SKILL.md
-8. D:\Codex_workspace\codex_ultra_orchestration\ultra-orchestration\skills-vnext\ultra-delivery\SKILL.md
+1. <REPO_ROOT>\skills-vnext\ultra-brainstorming\SKILL.md
+2. <REPO_ROOT>\skills-vnext\ultra-planning\SKILL.md
+3. <REPO_ROOT>\skills-vnext\openspec-ultra-bridge-v2\SKILL.md
+4. <REPO_ROOT>\skills-vnext\ultra-risk-vetting\SKILL.md
+5. <REPO_ROOT>\skills-vnext\ultra-execution-control\SKILL.md
+6. <REPO_ROOT>\skills-vnext\ultra-review\SKILL.md
+7. <REPO_ROOT>\skills-vnext\ultra-qa\SKILL.md
+8. <REPO_ROOT>\skills-vnext\ultra-delivery\SKILL.md
 
-目标仓库是 D:\Codex_workspace\teammate\app-repo。
-目标 change 是 openspec/changes/desktop-runtime-foundation。
+目标仓库是 <PROJECT_ROOT>。
+目标 change 是 openspec/changes/<change-id>。
 请按 vNext 方法完成 spec tighten、bridge mapping、execution-ready plan、review、QA 和 delivery。
 ```
 
