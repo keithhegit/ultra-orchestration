@@ -34,6 +34,8 @@ Use:
 Skip `ultra-brainstorming` only when success criteria and constraints are
 already explicit.
 
+Planning is still mandatory before controlled dispatch.
+
 ### OpenSpec Change
 
 Use:
@@ -48,6 +50,8 @@ Use:
 
 OpenSpec owns the durable spec. Ultra owns execution control.
 
+Bridge output must still pass through `ultra-planning` before dispatch.
+
 ### Bug Fix
 
 Use:
@@ -60,6 +64,22 @@ Use:
 6. `ultra-delivery`
 
 The plan must include regression surface and verification intent before edits.
+
+## Planning Gate
+
+`ultra-planning` is the second hard gate after task classification.
+
+Do not move from routing into controlled execution until planning has produced:
+
+- one `TaskManifest`
+- one or more `WorkPackage` items
+- owned paths
+- acceptance checks
+- risk and retry assumptions
+- serial or parallel execution notes
+
+If planning cannot produce those outputs, route back to brainstorming or bridge
+preparation instead of improvising during implementation.
 
 ## Routing Principles
 

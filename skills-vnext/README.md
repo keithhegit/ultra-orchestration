@@ -10,6 +10,28 @@ skills are compatible with agents that support `SKILL.md`-based Agent Skills.
 - support artifact-driven handoff instead of full chat-history inheritance
 - make risk decisions, QA evidence, and final delivery logs auditable
 
+## Skill Levels
+
+### Rigid workflow skills
+
+- `ultra-vnext-core`
+- `ultra-brainstorming`
+- `ultra-planning`
+- `ultra-risk-vetting`
+- `ultra-delivery`
+
+These skills define protocol gates and should be followed strictly.
+
+### Controlled execution skills
+
+- `ultra-execution-control`
+- `ultra-review`
+- `ultra-qa`
+- `openspec-ultra-bridge-v2`
+
+These skills may adapt to context, but must not cross contracts, safety gates,
+or role boundaries.
+
 ## Skills
 
 - `ultra-vnext-core`
@@ -63,6 +85,9 @@ $ultra-vnext-core OpenSpec change <change-id or path>: <task description>
 
 `ultra-vnext-core` routes to the other vNext skills as needed, so users do not
 need to list every subskill in the startup prompt.
+
+`ultra-planning` is the hard gate before controlled dispatch. If the resulting
+plan still leaves key decisions to the implementer, the run is not ready.
 
 For full installation and startup prompts, see the root
 [`README.md`](../README.md).

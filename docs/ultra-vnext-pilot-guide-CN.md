@@ -45,7 +45,7 @@ $ultra-vnext-core <任务描述>
 - `openspec-ultra-bridge-v2`
   将 OpenSpec change 资产桥接成 Ultra 执行工件
 
-## 推荐试跑方式
+## 推荐调用方式
 
 ### 通用任务
 
@@ -54,6 +54,10 @@ $ultra-vnext-core 构建一个工作区模型默认值设置页。
 ```
 
 主入口会按需要路由到设计澄清、规划、风险门、执行、审查、QA 和交付阶段。
+
+最短成功链路：
+
+`ultra-vnext-core -> auto route -> ultra-planning -> review-ready TaskManifest / WorkPackages`
 
 ### OpenSpec 项目
 
@@ -74,6 +78,21 @@ $ultra-vnext-core bugfix: 审批通过后命令执行卡住。
 ```
 
 主入口会建立最小调查计划，识别回归面，执行风险判断，并要求交付前提供 QA 证据。
+
+## Planning 是第二道关键门
+
+在 vNext 中，`ultra-planning` 是主入口之后的第二道关键门。
+
+只有当 planning 输出满足以下条件，运行才可以进入受控 dispatch：
+
+- 有 `TaskManifest`
+- 有一个或多个 `WorkPackage`
+- owned paths 明确
+- acceptance checks 可验证
+- 依赖顺序明确
+- risk 和 retry 假设明确
+
+如果 planning 产物仍然依赖聊天上下文才能理解，则试跑视为失败。
 
 ## 辅助脚本
 
@@ -110,13 +129,14 @@ python <REPO_ROOT>\skills-vnext\ultra-vnext-core\scripts\validate_contracts.py `
 任务：OpenSpec change <PROJECT_ROOT>\openspec\changes\<change-id>，实现第一个 slice。
 ```
 
-## 成功标准
+## 成功判断
 
 一次试跑可以认为成功，当它满足：
 
 - 用户只需要调用 `ultra-vnext-core` 主入口
 - 主入口能正确识别通用任务、OpenSpec change 或 bugfix
 - 实现前存在明确 design 或 OpenSpec change
+- `ultra-planning` 已作为第二道关键门发挥作用
 - `TaskManifest` 和 `WorkPackage` 不依赖聊天历史也能被理解
 - 风险门有明确分级和 guardrail
 - review 有 accept / reject / reroute 结论
