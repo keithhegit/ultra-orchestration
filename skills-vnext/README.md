@@ -25,8 +25,26 @@ without modifying the stable workspace-level skills under
   spec and engineering review with explicit reject or reroute decisions
 - `ultra-qa`
   scenario-based static and dynamic QA with pass or fail outcomes
+- `ultra-risk-vetting`
+  risk classification, approval thresholds, and guardrail selection
+- `ultra-delivery`
+  final deliverable, orchestration log, vetter report, and retro packaging
 - `openspec-ultra-bridge-v2`
   map OpenSpec change assets into Ultra execution artifacts
+
+## Stable To vNext Mapping
+
+| vNext skill | Stable relationship | Replacement type |
+|---|---|---|
+| `ultra-vnext-core` | `ultra-orchestrator` | partial replacement plus shared kernel |
+| `ultra-brainstorming` | `clarify-and-intake` + early `autoplan` | enhanced replacement |
+| `ultra-planning` | `decision-complete-planner` | direct replacement |
+| `ultra-execution-control` | `dispatch-and-track` + part of `safety-guard` | enhanced integration |
+| `ultra-review` | `spec-review` + `code-review` | merged replacement |
+| `ultra-qa` | `qa-verify` | direct replacement |
+| `ultra-risk-vetting` | `risk-vetter` + approval part of `safety-guard` | direct replacement |
+| `ultra-delivery` | `deliver-and-retro` | direct replacement |
+| `openspec-ultra-bridge-v2` | `openspec-ultra-bridge` | enhanced replacement |
 
 ## Current Scope
 

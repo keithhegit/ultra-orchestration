@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra Delivery"
+  short_description: "Deliverables, logs, and retro"
+  default_prompt: "Use $ultra-delivery to package final deliverables, orchestration logs, vetter reports, and retro notes."

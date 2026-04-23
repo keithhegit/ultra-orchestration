@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra Risk Vetting"
+  short_description: "Risk gates and approval thresholds"
+  default_prompt: "Use $ultra-risk-vetting to classify risk and choose approval or guardrail requirements before execution."
