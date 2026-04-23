@@ -1,12 +1,63 @@
 ---
 name: ultra-vnext-core
-description: Shared orchestration contracts, state-machine rules, context-firewall handoff, and host-driven ledger guidance for Codex Ultra vNext. Use when building, reviewing, or running a multi-stage Codex workflow that needs consistent manifests, work packages, agent results, safe parallelism, retry limits, and auditable delivery artifacts.
+description: Primary entry point and router for Codex Ultra vNext. Use this single skill to start an orchestrated run for new features, bug fixes, OpenSpec changes, multi-file work, review/QA-heavy work, or any task that needs planning, dispatch, risk gates, execution control, review, QA, delivery evidence, and retro. The core skill decides which vNext subskills to load and in what order.
 ---
 
 # Ultra VNext Core
 
-Use this skill as the shared operating contract for the rest of the vNext
-suite. Load it first when the work spans multiple stages, roles, or artifacts.
+Use this skill as the main entry point for the vNext suite. The user should not
+need to list every subskill. Route the request, load only the needed sibling
+skills, and keep the run moving through the control plane.
+
+## Startup Contract
+
+Recommended user invocation:
+
+```text
+$ultra-vnext-core <task description>
+```
+
+OpenSpec invocation:
+
+```text
+$ultra-vnext-core OpenSpec change <change-id or path>: <task description>
+```
+
+Bug fix invocation:
+
+```text
+$ultra-vnext-core bugfix: <symptom, failing behavior, or suspected area>
+```
+
+If the client exposes slash aliases, `/ultra-vnext-core` can be used the same
+way.
+
+## Router Duties
+
+When invoked:
+
+1. Classify the task.
+2. Decide the minimal subskill sequence.
+3. Load only the needed sibling skills.
+4. Execute the fixed state machine.
+5. Produce delivery artifacts or a clear blocker.
+
+Do not ask the user to manually name every subskill.
+
+## Routing Table
+
+| Task signal | Route |
+|---|---|
+| vague idea, new feature, UX/API design, architecture-sensitive work | `ultra-brainstorming -> ultra-planning -> ultra-risk-vetting -> ultra-execution-control -> ultra-review -> ultra-qa -> ultra-delivery` |
+| clear multi-file implementation | `ultra-planning -> ultra-risk-vetting -> ultra-execution-control -> ultra-review -> ultra-qa -> ultra-delivery` |
+| OpenSpec change path, `openspec/changes`, proposal/design/tasks, archive workflow | `openspec-ultra-bridge-v2 -> ultra-planning -> ultra-risk-vetting -> ultra-execution-control -> ultra-review -> ultra-qa -> ultra-delivery` |
+| bug, regression, failing test, broken behavior | `ultra-planning -> ultra-risk-vetting -> ultra-execution-control -> ultra-review -> ultra-qa -> ultra-delivery` |
+| review-only request | `ultra-review -> ultra-delivery` |
+| QA-only request | `ultra-qa -> ultra-delivery` |
+| high-risk command, publishing, destructive write, credentials, external mutation | `ultra-risk-vetting` before any execution |
+
+If a task is trivially small, you may compress phases, but record the skipped
+phase and reason in the orchestration log.
 
 ## Core Rules
 
@@ -44,8 +95,8 @@ Pass only:
 - file pointers or artifact paths the worker needs
 - failure context if the task is a retry or reroute
 
-This rule absorbs the best OpenSpec and Superpowers discipline while keeping
-token growth under control.
+This rule keeps OpenSpec-style durable artifacts and design-first discipline
+available without letting token growth or inherited mistakes take over the run.
 
 ## Safe Parallelism
 
@@ -85,5 +136,6 @@ See [contracts](references/contracts.md) and
 ## Read Next
 
 - Read [design-tenets](references/design-tenets.md) for the governing rules.
+- Read [routing](references/routing.md) for detailed routing examples.
 - Read [source-synthesis](references/source-synthesis.md) for how this vNext
   suite combines Superpowers, OpenSpec, gstack, karpathy-guidelines, and OMX.

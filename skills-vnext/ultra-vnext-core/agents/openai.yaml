@@ -1,4 +1,4 @@
 interface:
   display_name: "Ultra VNext Core"
-  short_description: "Shared contracts and runtime rules"
-  default_prompt: "Use $ultra-vnext-core to enforce shared orchestration contracts and runtime rules."
+  short_description: "Main vNext router and control plane"
+  default_prompt: "Use $ultra-vnext-core to route this task through the right vNext planning, execution, review, QA, and delivery skills."

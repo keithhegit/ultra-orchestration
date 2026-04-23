@@ -277,38 +277,49 @@ Please read and use:
 
 ## Starting The vNext Workflow
 
-### For A New Feature
+`ultra-vnext-core` is the primary vNext entry point. Users should not need to
+name every subskill. The core skill routes the task to the right sequence:
+brainstorming, planning, OpenSpec bridge, risk vetting, execution control,
+review, QA, and delivery.
 
-Use this starting prompt:
-
-```text
-Use $ultra-vnext-core, $ultra-brainstorming, $ultra-planning, $ultra-risk-vetting,
-$ultra-execution-control, $ultra-review, $ultra-qa, and $ultra-delivery.
-Start with design-first clarification, produce a TaskManifest and WorkPackages,
-then execute only after reviewable acceptance checks exist.
-```
-
-### For An OpenSpec-Based Project
-
-Use this starting prompt:
+### General Startup
 
 ```text
-Use $openspec-ultra-bridge-v2 with $ultra-vnext-core.
-Treat OpenSpec as the specification layer and Ultra as the execution control plane.
-Bridge one change into TaskManifest and WorkPackages, then continue through review,
-QA, delivery, and retro.
+$ultra-vnext-core <task description>
 ```
 
-### For A Bug Fix
-
-Use this starting prompt:
+Example:
 
 ```text
-Use $ultra-vnext-core, $ultra-planning, $ultra-risk-vetting, $ultra-review,
-$ultra-qa, and $ultra-delivery. Build a minimal investigation plan, identify
-the regression surface, fix only the approved owned paths, and require QA
-evidence before delivery.
+$ultra-vnext-core Build a workspace settings page for model defaults.
 ```
+
+### OpenSpec Startup
+
+```text
+$ultra-vnext-core OpenSpec change <change-id or path>: <task description>
+```
+
+Example:
+
+```text
+$ultra-vnext-core OpenSpec change workspace-model-defaults: implement the first slice.
+```
+
+### Bug Fix Startup
+
+```text
+$ultra-vnext-core bugfix: <symptom or failing behavior>
+```
+
+Example:
+
+```text
+$ultra-vnext-core bugfix: command execution hangs after approval is granted.
+```
+
+If your agent client exposes slash aliases, use `/ultra-vnext-core` with the
+same forms.
 
 ## Helper Scripts
 
@@ -652,36 +663,45 @@ Copy-Item -Recurse -Force .\skills-vnext\ultra-delivery "$TARGET\ultra-delivery"
 
 ## 启动 vNext 工作流
 
-### 新功能开发
+`ultra-vnext-core` 是 vNext 的主入口。用户不需要手动列出所有子技能；主入口会根据任务类型自动路由到 brainstorming、planning、OpenSpec bridge、risk vetting、execution control、review、QA 和 delivery。
 
-推荐启动语：
-
-```text
-请使用 $ultra-vnext-core、$ultra-brainstorming、$ultra-planning、
-$ultra-risk-vetting、$ultra-execution-control、$ultra-review、$ultra-qa、
-$ultra-delivery。先做 design-first 澄清，产出 TaskManifest 和 WorkPackage，
-只有在 acceptance checks 可审查后才进入实现。
-```
-
-### OpenSpec 项目
-
-推荐启动语：
+### 通用启动
 
 ```text
-请使用 $openspec-ultra-bridge-v2 和 $ultra-vnext-core。
-把 OpenSpec 当作规格层，把 Ultra 当作执行控制平面。
-先桥接一个 change 到 TaskManifest 和 WorkPackage，然后继续 review、QA、delivery 和 retro。
+$ultra-vnext-core <任务描述>
 ```
 
-### Bug 修复
-
-推荐启动语：
+示例：
 
 ```text
-请使用 $ultra-vnext-core、$ultra-planning、$ultra-risk-vetting、
-$ultra-review、$ultra-qa 和 $ultra-delivery。先建立最小调查计划，
-识别回归面，只修改批准的 owned paths，并在交付前提供 QA 证据。
+$ultra-vnext-core 构建一个工作区模型默认值设置页。
 ```
+
+### OpenSpec 启动
+
+```text
+$ultra-vnext-core OpenSpec change <change-id 或路径>: <任务描述>
+```
+
+示例：
+
+```text
+$ultra-vnext-core OpenSpec change workspace-model-defaults: 实现第一个 slice。
+```
+
+### Bug 修复启动
+
+```text
+$ultra-vnext-core bugfix: <异常现象或失败行为>
+```
+
+示例：
+
+```text
+$ultra-vnext-core bugfix: 审批通过后命令执行卡住。
+```
+
+如果你的 agent 客户端提供 slash alias，也可以用 `/ultra-vnext-core` 加同样的参数启动。
 
 ## 辅助脚本
 

@@ -8,44 +8,74 @@ vNext 技能树位置：
 
 `<REPO_ROOT>\skills-vnext`
 
-## 本轮包含的 vNext 技能
+## 主入口
+
+vNext 只需要一个主入口：
+
+```text
+$ultra-vnext-core <任务描述>
+```
+
+`ultra-vnext-core` 会根据任务类型自动路由到需要的子技能。用户不需要手动列出 `ultra-brainstorming`、`ultra-planning`、`ultra-review` 等全部技能。
+
+如果客户端提供 slash alias，也可以使用：
+
+```text
+/ultra-vnext-core <任务描述>
+```
+
+## 技能组成
 
 - `ultra-vnext-core`
-  共享 contracts、状态机、ledger 初始化和 contract 校验脚本
+  主入口、路由器、共享 contracts、状态机、ledger 初始化和 contract 校验脚本
 - `ultra-brainstorming`
-  吸收 `superpowers` 的 design-first / hard-gate 方式
+  设计先行的澄清流程与显式审批门
 - `ultra-planning`
-  强化 TaskManifest、WorkPackage、DAG 和写锁边界
+  TaskManifest、WorkPackage、DAG 和写锁边界
 - `ultra-execution-control`
-  强化 dispatch、freeze/careful/guard、host-driven ledger
+  dispatch、freeze/careful/guard、host-driven ledger
 - `ultra-review`
-  强化 spec fidelity / evidence / downside risk 审查
+  spec fidelity、evidence、downside risk 审查
 - `ultra-qa`
-  强化 static + dynamic QA 双模式
+  static + dynamic QA 双模式
 - `ultra-risk-vetting`
-  强化风险分级、审批门槛和护栏选择
+  风险分级、审批门槛和护栏选择
 - `ultra-delivery`
-  强化 final deliverable、orchestration log、vetter report 和 retro 交付
+  final deliverable、orchestration log、vetter report 和 retro 交付
 - `openspec-ultra-bridge-v2`
   将 OpenSpec change 资产桥接成 Ultra 执行工件
 
-## 推荐试跑顺序
+## 推荐试跑方式
 
-建议先在 `/teammate` 项目验证一条完整但收敛的链路：
+### 通用任务
 
-1. 选择一个已有 OpenSpec change
-2. 用 `openspec-ultra-bridge-v2` 生成桥接工件
-3. 用 `ultra-vnext-core` 初始化 run 目录
-4. 用 `ultra-brainstorming` 和 `ultra-planning` 重新审视是否收敛
-5. 用 `ultra-risk-vetting` 做风险门判断
-6. 进入 execution、review、QA
-7. 用 `ultra-delivery` 汇总交付、证据、风险和复盘
+```text
+$ultra-vnext-core 构建一个工作区模型默认值设置页。
+```
 
-推荐 change：
+主入口会按需要路由到设计澄清、规划、风险门、执行、审查、QA 和交付阶段。
+
+### OpenSpec 项目
+
+```text
+$ultra-vnext-core OpenSpec change <change-id 或路径>: 实现第一个 slice。
+```
+
+示例 change 路径：
 
 `<PROJECT_ROOT>\openspec\changes\<change-id>`
 
-## 已验证的本地命令
+主入口会先路由到 `openspec-ultra-bridge-v2`，再继续进入 Ultra 的规划、执行、审查、QA 和交付流程。
+
+### Bug 修复
+
+```text
+$ultra-vnext-core bugfix: 审批通过后命令执行卡住。
+```
+
+主入口会建立最小调查计划，识别回归面，执行风险判断，并要求交付前提供 QA 证据。
+
+## 辅助脚本
 
 初始化 run：
 
@@ -73,41 +103,19 @@ python <REPO_ROOT>\skills-vnext\ultra-vnext-core\scripts\validate_contracts.py `
 
 ## 不安装时如何调用
 
-如果还不想把 vNext 安装进全局技能目录，可以在新线程里让 Codex 直接读取本仓库里的 `SKILL.md`。
-
-最小桥接链路：
+如果暂时不想安装 vNext，可以让 agent 直接读取主入口技能文件：
 
 ```text
-请读取并使用：
-1. <REPO_ROOT>\skills-vnext\openspec-ultra-bridge-v2\SKILL.md
-2. <REPO_ROOT>\skills-vnext\ultra-vnext-core\SKILL.md
-
-然后对 <PROJECT_ROOT>\openspec\changes\<change-id>
-执行 bridge + run 初始化 + planning 准备。
-```
-
-完整设计先行链路：
-
-```text
-请依次读取并使用：
-1. <REPO_ROOT>\skills-vnext\ultra-brainstorming\SKILL.md
-2. <REPO_ROOT>\skills-vnext\ultra-planning\SKILL.md
-3. <REPO_ROOT>\skills-vnext\openspec-ultra-bridge-v2\SKILL.md
-4. <REPO_ROOT>\skills-vnext\ultra-risk-vetting\SKILL.md
-5. <REPO_ROOT>\skills-vnext\ultra-execution-control\SKILL.md
-6. <REPO_ROOT>\skills-vnext\ultra-review\SKILL.md
-7. <REPO_ROOT>\skills-vnext\ultra-qa\SKILL.md
-8. <REPO_ROOT>\skills-vnext\ultra-delivery\SKILL.md
-
-目标仓库是 <PROJECT_ROOT>。
-目标 change 是 openspec/changes/<change-id>。
-请按 vNext 方法完成 spec tighten、bridge mapping、execution-ready plan、review、QA 和 delivery。
+请读取并使用 <REPO_ROOT>\skills-vnext\ultra-vnext-core\SKILL.md。
+任务：OpenSpec change <PROJECT_ROOT>\openspec\changes\<change-id>，实现第一个 slice。
 ```
 
 ## 成功标准
 
 一次试跑可以认为成功，当它满足：
 
+- 用户只需要调用 `ultra-vnext-core` 主入口
+- 主入口能正确识别通用任务、OpenSpec change 或 bugfix
 - 实现前存在明确 design 或 OpenSpec change
 - `TaskManifest` 和 `WorkPackage` 不依赖聊天历史也能被理解
 - 风险门有明确分级和 guardrail

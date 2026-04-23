@@ -13,7 +13,8 @@ skills are compatible with agents that support `SKILL.md`-based Agent Skills.
 ## Skills
 
 - `ultra-vnext-core`
-  shared contracts, state-machine rules, host-driven ledger, and helper scripts
+  primary entry point, router, shared contracts, state-machine rules,
+  host-driven ledger, and helper scripts
 - `ultra-brainstorming`
   design-first discovery and approval gates before planning or coding
 - `ultra-planning`
@@ -47,8 +48,21 @@ skills are compatible with agents that support `SKILL.md`-based Agent Skills.
 
 ## Usage
 
-Install these folders into your target agent's documented skills directory, or
-ask the agent to read individual `SKILL.md` files from this repository.
+Install these folders into your target agent's documented skills directory.
+Start with the main entry skill:
+
+```text
+$ultra-vnext-core <task description>
+```
+
+For OpenSpec projects:
+
+```text
+$ultra-vnext-core OpenSpec change <change-id or path>: <task description>
+```
+
+`ultra-vnext-core` routes to the other vNext skills as needed, so users do not
+need to list every subskill in the startup prompt.
 
 For full installation and startup prompts, see the root
 [`README.md`](../README.md).
