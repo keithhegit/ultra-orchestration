@@ -12,6 +12,7 @@ Package the run for the user and for future runs.
 - `final_deliverable`
 - `orchestration_log`
 - `vetter_report`
+- `control_surface_used`
 - short retro notes
 
 ## Rules
@@ -20,3 +21,19 @@ Package the run for the user and for future runs.
 - Include approval or guardrail decisions in `vetter_report`.
 - Keep retro brief and action-oriented.
 - Do not bury blockers or unverified claims.
+- For `STRICT` and `STRICT_OPENSPEC`, do not deliver unless run ledger,
+  contract validation, review, and QA status are explicit.
+- If any control surface was skipped, name it and explain why.
+
+## control_surface_used
+
+Include:
+
+- `run_mode`
+- `used_openspec_change`
+- `used_openspec_bridge`
+- `used_run_ledger`
+- `used_contract_validation`
+- `used_slice_dag`
+- `used_dynamic_qa`
+- skipped control surfaces and reasons

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Ultra Orchestrator Legacy"
+  short_description: "Original lightweight Ultra flow"
+  default_prompt: "Use $ultra-orchestrator-legacy for the original stage-based Ultra workflow without strict OpenSpec-first controls."
+
+policy:
+  allow_implicit_invocation: true

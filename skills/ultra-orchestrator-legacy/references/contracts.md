@@ -7,10 +7,6 @@ Use these canonical shapes across all sibling skills.
 ```json
 {
   "id": "task-001",
-  "run_mode": "STRICT_OPENSPEC",
-  "change_id": "workspace-model-defaults",
-  "slice_status": "slice_0_spec_ready",
-  "next_slice": "slice_1_completed",
   "goal": "Ship a user-visible feature or fix",
   "context": ["Relevant repo facts or prior artifacts"],
   "success_criteria": ["Observable outcomes"],
@@ -31,7 +27,6 @@ Use these canonical shapes across all sibling skills.
   "task_id": "task-001",
   "role": "Worker",
   "scope": "Implement invoice retry UI state",
-  "slice": "slice_1_completed",
   "owned_paths": ["src/features/invoices"],
   "input_artifacts": ["plan.md", "task-manifest.json"],
   "acceptance_checks": ["Loading, success, error states render"],
@@ -61,28 +56,25 @@ Use these canonical shapes across all sibling skills.
 ```json
 {
   "run_id": "run-20260325-001",
-  "run_mode": "STRICT_OPENSPEC",
-  "phase": "Review",
-  "status": "active",
-  "created_at": "2026-04-24T00:00:00+00:00",
-  "updated_at": "2026-04-24T00:10:00+00:00",
-  "tasks": [
-    {
-      "task_id": "task-001",
-      "status": "review",
-      "retry_count": 0,
-      "max_retries": 1,
-      "owned_paths": ["src/features/invoices"]
-    }
-  ],
+  "current_stage": "review",
+  "task_status": {
+    "task-001": "review"
+  },
+  "dependencies_satisfied": {
+    "task-001": true
+  },
+  "retry_counts": {
+    "task-001": 0
+  },
+  "max_retries": {
+    "task-001": 1
+  },
+  "active_write_locks": {
+    "src/features/invoices": "task-001"
+  },
   "blockers": [],
-  "review_queue": ["task-001"],
-  "qa_queue": [],
-  "integration": {
-    "status": "waiting",
-    "accepted_results": [],
-    "rejected_results": []
-  }
+  "pending_review": ["task-001"],
+  "integration_status": "waiting"
 }
 ```
 
@@ -107,16 +99,6 @@ Use these canonical shapes across all sibling skills.
     "checked_items": [],
     "risk_level": "LOW",
     "decisions": []
-  },
-  "control_surface_used": {
-    "run_mode": "STRICT_OPENSPEC",
-    "used_openspec_change": true,
-    "used_openspec_bridge": true,
-    "used_run_ledger": true,
-    "used_contract_validation": true,
-    "used_slice_dag": true,
-    "used_dynamic_qa": true,
-    "skipped_control_surfaces": []
   }
 }
 ```

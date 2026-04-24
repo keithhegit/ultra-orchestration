@@ -1,50 +1,78 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import json
 from pathlib import Path
 
 
-REQUIRED_TOP_LEVEL = {"final_deliverable", "orchestration_log", "vetter_report"}
 REQUIRED_LEDGER = {
     "run_id",
-    "current_stage",
-    "task_status",
-    "dependencies_satisfied",
-    "retry_counts",
-    "max_retries",
-    "active_write_locks",
+    "run_mode",
+    "phase",
+    "status",
+    "created_at",
+    "updated_at",
+    "tasks",
     "blockers",
-    "pending_review",
-    "integration_status",
+    "review_queue",
+    "qa_queue",
+    "integration",
+}
+
+REQUIRED_OUTPUT = {
+    "final_deliverable",
+    "orchestration_log",
+    "vetter_report",
+    "control_surface_used",
+}
+
+REQUIRED_CONTROL = {
+    "run_mode",
+    "used_openspec_change",
+    "used_openspec_bridge",
+    "used_run_ledger",
+    "used_contract_validation",
+    "used_slice_dag",
+    "used_dynamic_qa",
+    "skipped_control_surfaces",
 }
 
 
-def validate_json(path: Path) -> dict:
-    with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+def read_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def missing(required: set[str], payload: dict) -> list[str]:
+    return sorted(required - set(payload))
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate Ultra-Orchestrator run artifacts.")
+    parser = argparse.ArgumentParser(description="Validate an Ultra run directory.")
     parser.add_argument("run_dir", help="Directory containing ledger.json and run-output.json")
     args = parser.parse_args()
 
     run_dir = Path(args.run_dir)
-    ledger = validate_json(run_dir / "ledger.json")
-    output = validate_json(run_dir / "run-output.json")
+    ledger = read_json(run_dir / "ledger.json")
+    output = read_json(run_dir / "run-output.json")
+    control = output.get("control_surface_used", {})
 
-    missing_ledger = sorted(REQUIRED_LEDGER - set(ledger))
-    missing_output = sorted(REQUIRED_TOP_LEVEL - set(output))
+    problems = []
+    for label, required, payload in [
+        ("ledger", REQUIRED_LEDGER, ledger),
+        ("run-output", REQUIRED_OUTPUT, output),
+        ("control_surface_used", REQUIRED_CONTROL, control),
+    ]:
+        fields = missing(required, payload)
+        if fields:
+            problems.append(f"{label} missing: {', '.join(fields)}")
 
-    if missing_ledger or missing_output:
-        if missing_ledger:
-            print("Missing ledger keys:", ", ".join(missing_ledger))
-        if missing_output:
-            print("Missing run-output keys:", ", ".join(missing_output))
-        return 1
+    if ledger.get("run_mode") not in {"LIGHT", "STANDARD", "STRICT", "STRICT_OPENSPEC"}:
+        problems.append("ledger run_mode is invalid")
 
-    if output["vetter_report"].get("risk_level") not in {"LOW", "MEDIUM", "HIGH", "EXTREME"}:
-        print("Invalid risk level in vetter_report")
+    if problems:
+        for problem in problems:
+            print(problem)
         return 1
 
     print("Run artifacts are valid.")

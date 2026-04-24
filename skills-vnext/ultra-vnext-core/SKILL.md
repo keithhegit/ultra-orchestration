@@ -1,74 +1,100 @@
 ---
 name: ultra-vnext-core
-description: Primary entry point and router for Codex Ultra vNext. Use this single skill to start an orchestrated run for new features, bug fixes, OpenSpec changes, multi-file work, review/QA-heavy work, or any task that needs planning, dispatch, risk gates, execution control, review, QA, delivery evidence, and retro. The core skill decides which vNext subskills to load and in what order.
+description: Compatibility and preview alias for the main Ultra Orchestrator strict protocol. Use this single skill to start vNext-style orchestrated runs when users still invoke ultra-vnext-core; it should follow the same run-mode decision, strict OpenSpec preference, ledger, JSON artifact, contract validation, slice DAG, review, QA, delivery, and retro behavior as ultra-orchestrator.
 ---
 
 # Ultra VNext Core
 
-Use this skill as the main entry point for the vNext suite. The user should not
-need to list every subskill. Route the request, load only the needed sibling
-skills, and keep the run moving through the control plane.
+Use this skill as a compatibility alias for the mainline `$ultra-orchestrator`
+protocol. The user should not need to list every subskill.
 
-## Startup Contract
-
-Recommended user invocation:
+Prefer the same behavior as the new main entry point:
 
 ```text
-$ultra-vnext-core <task description>
+$ultra-orchestrator <task description>
 ```
 
-OpenSpec invocation:
+`$ultra-vnext-core <task description>` remains valid for existing users and
+pilot runs.
 
-```text
-$ultra-vnext-core OpenSpec change <change-id or path>: <task description>
-```
+## Run Mode Decision
 
-Bug fix invocation:
+Classify the run before planning or execution:
 
-```text
-$ultra-vnext-core bugfix: <symptom, failing behavior, or suspected area>
-```
+- `LIGHT`
+  review-only, QA-only, explanation-only, or user-explicit lightweight work
+- `STANDARD`
+  user-explicit fast orchestration with bounded risk and no full control plane
+- `STRICT`
+  development work where OpenSpec is unavailable but ledger and JSON contracts
+  are still required
+- `STRICT_OPENSPEC`
+  default for development work, bug fixes, multi-file implementation, pilots,
+  full orchestration tests, OpenSpec work, slice DAG work, and control-plane
+  validation
 
-If the client exposes slash aliases, `/ultra-vnext-core` can be used the same
-way.
+Development tasks must prefer `STRICT_OPENSPEC`. If that mode is impossible,
+explain why and downgrade explicitly. Markdown-only artifacts are not enough
+for `STRICT` or `STRICT_OPENSPEC`.
 
 ## Router Duties
 
 When invoked:
 
-1. Classify the task.
-2. Decide the minimal subskill sequence.
-3. Load only the needed sibling skills.
-4. Execute the fixed state machine.
-5. Produce delivery artifacts or a clear blocker.
+1. classify the task and choose `run_mode`
+2. create or require OpenSpec change scaffolding when `STRICT_OPENSPEC` applies
+3. initialize the run ledger for `STRICT` and `STRICT_OPENSPEC`
+4. route through the minimal required sibling skills
+5. validate machine-checkable artifacts before delivery
+6. produce delivery artifacts or a clear blocker
 
 Do not ask the user to manually name every subskill.
 
-## Routing Table
+## Strict Control Plane
 
-| Task signal | Route |
-|---|---|
-| vague idea, new feature, UX/API design, architecture-sensitive work | `ultra-brainstorming -> ultra-planning -> ultra-risk-vetting -> ultra-execution-control -> ultra-review -> ultra-qa -> ultra-delivery` |
-| clear multi-file implementation | `ultra-planning -> ultra-risk-vetting -> ultra-execution-control -> ultra-review -> ultra-qa -> ultra-delivery` |
-| OpenSpec change path, `openspec/changes`, proposal/design/tasks, archive workflow | `openspec-ultra-bridge-v2 -> ultra-planning -> ultra-risk-vetting -> ultra-execution-control -> ultra-review -> ultra-qa -> ultra-delivery` |
-| bug, regression, failing test, broken behavior | `ultra-planning -> ultra-risk-vetting -> ultra-execution-control -> ultra-review -> ultra-qa -> ultra-delivery` |
-| review-only request | `ultra-review -> ultra-delivery` |
-| QA-only request | `ultra-qa -> ultra-delivery` |
-| high-risk command, publishing, destructive write, credentials, external mutation | `ultra-risk-vetting` before any execution |
+For `STRICT` and `STRICT_OPENSPEC`, the run must use:
 
-If a task is trivially small, you may compress phases, but record the skipped
-phase and reason in the orchestration log.
+- `scripts/new_run.py` to initialize a run directory
+- `ledger.json` as the execution state record
+- JSON `TaskManifest`
+- JSON `WorkPackage`
+- JSON or structured `AgentResult`
+- `scripts/validate_contracts.py` for core artifact validation
+- explicit review and QA gates
+- final `control_surface_used`
 
-## Core Rules
+If a required script or artifact cannot be used, stop with a blocker instead
+of silently downgrading to markdown-only orchestration.
 
-1. Treat orchestration as a finite-state machine, not a one-way waterfall.
-2. Hand off artifacts, not raw chat history.
-3. Let the host update the ledger; the model proposes state changes but should
-   not freehand large ledger rewrites.
-4. Allow parallelism only when the DAG is ready and write scopes do not overlap.
-5. Require evidence before promotion into review, QA, or final delivery.
+## OpenSpec Bootstrap
 
-## Standard State Machine
+When `STRICT_OPENSPEC` applies and no existing change is available, create or
+request this scaffold:
+
+```text
+openspec/changes/<change-id>/proposal.md
+openspec/changes/<change-id>/design.md
+openspec/changes/<change-id>/tasks.md
+openspec/changes/<change-id>/ultra-bridge.md
+```
+
+## Slice-Driven Execution
+
+Keep `change` and `slice` separate:
+
+- OpenSpec `change` is the specification and progress ledger unit
+- Ultra `slice` is the implementation, verification, and commit unit
+
+Use this slice status vocabulary:
+
+- `slice_0_not_opened`
+- `slice_0_spec_ready`
+- `slice_1_completed`
+- `slice_2_in_progress`
+- `slice_3_qa_pending`
+- `slice_4_done`
+
+## State Machine
 
 Default phases:
 
@@ -80,62 +106,22 @@ Required loopbacks:
 - `QA -> Execute` when behavior is wrong but architecture is still valid
 - `QA -> Plan` when the failure exposes a planning or requirement flaw
 
-Default retry policy:
+## Delivery Requirement
 
-- transient failures: at most 1 bounded retry per work package
-- repeated or hard blockers: escalate with summary, evidence, and next-step ask
-
-## Context Firewall
-
-Do not pass the entire upstream conversation to downstream workers by default.
-Pass only:
-
-- the relevant `TaskManifest`
-- the assigned `WorkPackage`
-- file pointers or artifact paths the worker needs
-- failure context if the task is a retry or reroute
-
-This rule keeps OpenSpec-style durable artifacts and design-first discipline
-available without letting token growth or inherited mistakes take over the run.
-
-## Safe Parallelism
-
-Dispatch a task in parallel only when all of the following are true:
-
-- its dependencies are satisfied in the task DAG
-- its `owned_paths` do not intersect with another active write package
-- its inputs are stable enough that the worker will not need speculative design
-- its acceptance checks are concrete enough for independent verification
-
-If any condition is false, serialize.
-
-## Shared Outputs
-
-Every orchestrated run should converge on these top-level artifacts:
+Every delivery must include:
 
 - `final_deliverable`
 - `orchestration_log`
 - `vetter_report`
+- `control_surface_used`
 
-Every child task should converge on:
-
-- `TaskManifest`
-- `WorkPackage`
-- `AgentResult`
-
-See [contracts](references/contracts.md) and
-[state-machine](references/state-machine.md).
-
-## Scripts
-
-- `scripts/new_run.py`
-  initialize a run directory with a starter ledger and artifact folders
-- `scripts/validate_contracts.py`
-  validate required top-level fields for the core JSON artifacts
+`control_surface_used` must state `run_mode`, OpenSpec use, bridge use, ledger
+use, contract validation use, slice DAG use, dynamic QA use, and skipped control
+surfaces with reasons.
 
 ## Read Next
 
-- Read [design-tenets](references/design-tenets.md) for the governing rules.
-- Read [routing](references/routing.md) for detailed routing examples.
-- Read [source-synthesis](references/source-synthesis.md) for how this vNext
-  suite combines Superpowers, OpenSpec, gstack, karpathy-guidelines, and OMX.
+- Read [routing](references/routing.md) for strict routing examples.
+- Read [contracts](references/contracts.md) for machine-checkable artifacts.
+- Read [state-machine](references/state-machine.md) for phase and loopback rules.
+- Read [design-tenets](references/design-tenets.md) for governing principles.

@@ -1,11 +1,13 @@
 # Ultra Orchestration vNext Skill Tree
 
-This directory contains the vNext preview suite for Ultra Orchestration. The
-skills are compatible with agents that support `SKILL.md`-based Agent Skills.
+This directory contains vNext compatibility aliases and preview internals for
+Ultra Orchestration. The main public entry point now lives in
+`../skills/ultra-orchestrator`.
 
 ## Goals
 
-- provide a stricter orchestration protocol for complex engineering work
+- preserve vNext invocation compatibility while the strict protocol moves into
+  the mainline `ultra-orchestrator`
 - keep specification, execution, review, QA, risk, and delivery roles explicit
 - support artifact-driven handoff instead of full chat-history inheritance
 - make risk decisions, QA evidence, and final delivery logs auditable
@@ -35,8 +37,7 @@ or role boundaries.
 ## Skills
 
 - `ultra-vnext-core`
-  primary entry point, router, shared contracts, state-machine rules,
-  host-driven ledger, and helper scripts
+  compatibility alias for the mainline `ultra-orchestrator` strict protocol
 - `ultra-brainstorming`
   design-first discovery and approval gates before planning or coding
 - `ultra-planning`
@@ -54,11 +55,11 @@ or role boundaries.
 - `openspec-ultra-bridge-v2`
   map OpenSpec change assets into Ultra execution artifacts
 
-## Stable To vNext Mapping
+## Mainline Relationship
 
-| vNext skill | Stable relationship | Migration type |
+| vNext skill | Mainline relationship | Migration type |
 |---|---|---|
-| `ultra-vnext-core` | `ultra-orchestrator` | shared kernel |
+| `ultra-vnext-core` | `ultra-orchestrator` | compatibility alias |
 | `ultra-brainstorming` | `clarify-and-intake` + early `autoplan` | enhanced version |
 | `ultra-planning` | `decision-complete-planner` | direct counterpart |
 | `ultra-execution-control` | `dispatch-and-track` + part of `safety-guard` | integrated version |
@@ -71,20 +72,21 @@ or role boundaries.
 ## Usage
 
 Install these folders into your target agent's documented skills directory.
-Start with the main entry skill:
+Start new work with the mainline entry skill:
 
 ```text
-$ultra-vnext-core <task description>
+$ultra-orchestrator <task description>
 ```
 
-For OpenSpec projects:
+Existing vNext prompts still work:
 
 ```text
 $ultra-vnext-core OpenSpec change <change-id or path>: <task description>
 ```
 
-`ultra-vnext-core` routes to the other vNext skills as needed, so users do not
-need to list every subskill in the startup prompt.
+`ultra-vnext-core` should follow the same run-mode decision rules as
+`ultra-orchestrator`, including `STRICT_OPENSPEC` preference for development
+work.
 
 `ultra-planning` is the hard gate before controlled dispatch. If the resulting
 plan still leaves key decisions to the implementer, the run is not ready.

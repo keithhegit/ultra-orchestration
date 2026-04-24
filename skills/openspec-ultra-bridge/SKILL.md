@@ -1,4 +1,4 @@
-﻿---
+---
 name: openspec-ultra-bridge
 description: Bridge OpenSpec change artifacts into Ultra-Orchestrator execution artifacts. Use when a repo follows OpenSpec for proposal, design, tasks, and archive, but execution should remain controlled by Ultra-Orchestrator through TaskManifest, WorkPackage, review, QA, risk gates, and ledger-based orchestration.
 ---
@@ -6,6 +6,9 @@ description: Bridge OpenSpec change artifacts into Ultra-Orchestrator execution 
 # OpenSpec Ultra Bridge
 
 Treat OpenSpec as the spec source-of-truth and Ultra-Orchestrator as the execution control plane.
+
+This bridge is part of the mainline strict control plane. It is normally
+invoked by `$ultra-orchestrator`; users should not need to call it manually.
 
 ## Priority
 
@@ -113,6 +116,7 @@ When bridging, always make the current slice explicit for the selected change.
 For every newly opened change, initialize at minimum:
 
 - `proposal.md`
+- `design.md`
 - `tasks.md`
 - `ultra-bridge.md`
 
@@ -143,6 +147,19 @@ After each completed slice, the bridge should push status intent back into OpenS
 - suggest roadmap or current-status tally changes when opened/unopened counts changed
 
 Do not treat conversation text as an acceptable substitute for status synchronization.
+
+## Strict-mode output
+
+When the run mode is `STRICT_OPENSPEC`, produce or hand off:
+
+- JSON-ready `TaskManifest`
+- JSON-ready `WorkPackage` set
+- change-to-task mapping
+- current slice status
+- next slice
+- owned paths for the active slice
+- review and QA targets
+- archive or status-sync blockers
 
 ## Batch initialization mode
 

@@ -17,6 +17,10 @@ Required fields:
 
 Optional but recommended:
 
+- `run_mode`
+- `change_id`
+- `slice_status`
+- `next_slice`
 - `parallel_groups`
 - `assumptions`
 - `review_targets`
@@ -39,6 +43,7 @@ Recommended:
 - `retry_budget`
 - `risk_level`
 - `freeze_paths`
+- `slice`
 
 ## AgentResult
 
@@ -58,6 +63,7 @@ Required fields:
 Suggested top-level structure:
 
 - `run_id`
+- `run_mode`
 - `phase`
 - `status`
 - `created_at`
@@ -75,3 +81,17 @@ Required top-level fields:
 - `final_deliverable`
 - `orchestration_log`
 - `vetter_report`
+- `control_surface_used`
+
+## ControlSurfaceUsed
+
+Required fields:
+
+- `run_mode`
+- `used_openspec_change`
+- `used_openspec_bridge`
+- `used_run_ledger`
+- `used_contract_validation`
+- `used_slice_dag`
+- `used_dynamic_qa`
+- `skipped_control_surfaces`

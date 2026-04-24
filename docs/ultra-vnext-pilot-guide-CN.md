@@ -1,107 +1,139 @@
-# Codex Ultra Orchestration vNext 试跑说明
+# Codex Ultra Orchestration 主线试跑说明
 
 ## 目标
 
-这份说明用于试跑 `ultra-orchestration` 仓库中的 vNext 技能树。
+这份说明用于试跑 `ultra-orchestration` 仓库中的主线 strict 控制面。
 
-vNext 技能树位置：
+默认入口已经从 vNext 预览入口收敛为：
 
-`<REPO_ROOT>\skills-vnext`
+```text
+$ultra-orchestrator <任务描述>
+```
+
+`ultra-vnext-core` 仍然保留为兼容别名，但新用户和新项目默认使用
+`ultra-orchestrator`。
 
 ## 主入口
 
-vNext 只需要一个主入口：
+推荐调用方式：
 
 ```text
-$ultra-vnext-core <任务描述>
+$ultra-orchestrator <任务描述>
 ```
 
-`ultra-vnext-core` 会根据任务类型自动路由到需要的子技能。用户不需要手动列出 `ultra-brainstorming`、`ultra-planning`、`ultra-review` 等全部技能。
+OpenSpec 显式调用：
+
+```text
+$ultra-orchestrator OpenSpec change <change-id 或路径>: <任务描述>
+```
 
 如果客户端提供 slash alias，也可以使用：
 
 ```text
-/ultra-vnext-core <任务描述>
+/ultra-orchestrator <任务描述>
 ```
 
-## 技能组成
+## 运行模式
 
-- `ultra-vnext-core`
-  主入口、路由器、共享 contracts、状态机、ledger 初始化和 contract 校验脚本
-- `ultra-brainstorming`
-  设计先行的澄清流程与显式审批门
-- `ultra-planning`
-  TaskManifest、WorkPackage、DAG 和写锁边界
-- `ultra-execution-control`
-  dispatch、freeze/careful/guard、host-driven ledger
-- `ultra-review`
-  spec fidelity、evidence、downside risk 审查
-- `ultra-qa`
-  static + dynamic QA 双模式
-- `ultra-risk-vetting`
-  风险分级、审批门槛和护栏选择
-- `ultra-delivery`
-  final deliverable、orchestration log、vetter report 和 retro 交付
-- `openspec-ultra-bridge-v2`
-  将 OpenSpec change 资产桥接成 Ultra 执行工件
+主入口启动后必须先判断运行模式：
 
-## 推荐调用方式
+- `LIGHT`
+  适合 review-only、QA-only、解释类或用户明确要求轻量执行的任务。
+- `STANDARD`
+  适合用户明确要求快速编排、且风险低的任务。
+- `STRICT`
+  适合无法使用 OpenSpec，但仍需要 ledger 和 JSON contracts 的开发任务。
+- `STRICT_OPENSPEC`
+  开发任务默认优先模式，适合 feature、bugfix、多文件实现、pilot、完整控制面验证和 slice DAG 执行。
 
-### 通用任务
+开发任务应优先进入 `STRICT_OPENSPEC`。如果无法使用该模式，agent 必须说明降级原因。
+
+## 推荐试跑
+
+### 普通开发任务
 
 ```text
-$ultra-vnext-core 构建一个工作区模型默认值设置页。
+$ultra-orchestrator 构建一个工作区模型默认值设置页。
 ```
 
-主入口会按需要路由到设计澄清、规划、风险门、执行、审查、QA 和交付阶段。
+期望行为：
 
-最短成功链路：
-
-`ultra-vnext-core -> auto route -> ultra-planning -> review-ready TaskManifest / WorkPackages`
+- 默认优先 `STRICT_OPENSPEC`
+- 若没有现成 OpenSpec change，先创建或要求创建 change scaffold
+- 初始化 run ledger
+- 产出 JSON `TaskManifest` 和 JSON `WorkPackage`
+- 运行 contract validation
+- 按 slice DAG 推进
+- delivery 输出 `control_surface_used`
 
 ### OpenSpec 项目
 
 ```text
-$ultra-vnext-core OpenSpec change <change-id 或路径>: 实现第一个 slice。
+$ultra-orchestrator OpenSpec change <change-id 或路径>: 实现第一个 slice。
 ```
 
 示例 change 路径：
 
-`<PROJECT_ROOT>\openspec\changes\<change-id>`
-
-主入口会先路由到 `openspec-ultra-bridge-v2`，再继续进入 Ultra 的规划、执行、审查、QA 和交付流程。
-
-### Bug 修复
-
 ```text
-$ultra-vnext-core bugfix: 审批通过后命令执行卡住。
+<PROJECT_ROOT>\openspec\changes\<change-id>
 ```
 
-主入口会建立最小调查计划，识别回归面，执行风险判断，并要求交付前提供 QA 证据。
+期望行为：
 
-## Planning 是第二道关键门
+- 通过 `openspec-ultra-bridge` 桥接 proposal、design、tasks 和 ultra-bridge
+- 将 OpenSpec change 转成 Ultra execution artifacts
+- 再进入 planning、risk、dispatch、review、QA 和 delivery
 
-在 vNext 中，`ultra-planning` 是主入口之后的第二道关键门。
+### Review-only
 
-只有当 planning 输出满足以下条件，运行才可以进入受控 dispatch：
+```text
+$ultra-orchestrator review this implementation
+```
 
-- 有 `TaskManifest`
-- 有一个或多个 `WorkPackage`
-- owned paths 明确
-- acceptance checks 可验证
-- 依赖顺序明确
-- risk 和 retry 假设明确
+期望行为：
 
-如果 planning 产物仍然依赖聊天上下文才能理解，则试跑视为失败。
+- 允许 `LIGHT`
+- delivery 明确说明为什么未使用 OpenSpec、ledger 或 contract validation
+
+## 严格控制面最低要求
+
+`STRICT` 和 `STRICT_OPENSPEC` 运行必须具备：
+
+- `ledger.json`
+- JSON `TaskManifest`
+- JSON `WorkPackage`
+- JSON 或结构化 `AgentResult`
+- `validate_contracts.py` 校验结果
+- review 结论
+- QA 结论
+- `control_surface_used`
+
+如果只能产出 Markdown 文档，本次试跑不能算 strict 成功。
 
 ## 辅助脚本
 
 初始化 run：
 
 ```powershell
-python <REPO_ROOT>\skills-vnext\ultra-vnext-core\scripts\new_run.py `
-  <PROJECT_ROOT>\runs-vnext `
-  --run-id run-001
+python <REPO_ROOT>\skills\ultra-orchestrator\scripts\new_run.py `
+  <PROJECT_ROOT>\runs `
+  --run-id run-001 `
+  --run-mode STRICT_OPENSPEC
+```
+
+校验核心 contract：
+
+```powershell
+python <REPO_ROOT>\skills\ultra-orchestrator\scripts\validate_contracts.py `
+  <PROJECT_ROOT>\runs\run-001\ledger.json `
+  --kind executionledger
+```
+
+校验完整 run：
+
+```powershell
+python <REPO_ROOT>\skills\ultra-orchestrator\scripts\validate_run.py `
+  <PROJECT_ROOT>\runs\run-001
 ```
 
 桥接 OpenSpec change：
@@ -109,37 +141,18 @@ python <REPO_ROOT>\skills-vnext\ultra-vnext-core\scripts\new_run.py `
 ```powershell
 python <REPO_ROOT>\skills-vnext\openspec-ultra-bridge-v2\scripts\bridge_change.py `
   <PROJECT_ROOT>\openspec\changes\<change-id> `
-  <PROJECT_ROOT>\runs-vnext\bridge-output
-```
-
-校验核心 contract：
-
-```powershell
-python <REPO_ROOT>\skills-vnext\ultra-vnext-core\scripts\validate_contracts.py `
-  <PROJECT_ROOT>\runs-vnext\run-001\ledger.json `
-  --kind executionledger
-```
-
-## 不安装时如何调用
-
-如果暂时不想安装 vNext，可以让 agent 直接读取主入口技能文件：
-
-```text
-请读取并使用 <REPO_ROOT>\skills-vnext\ultra-vnext-core\SKILL.md。
-任务：OpenSpec change <PROJECT_ROOT>\openspec\changes\<change-id>，实现第一个 slice。
+  <PROJECT_ROOT>\runs\bridge-output
 ```
 
 ## 成功判断
 
-一次试跑可以认为成功，当它满足：
+一次主线试跑可以认为成功，当它满足：
 
-- 用户只需要调用 `ultra-vnext-core` 主入口
-- 主入口能正确识别通用任务、OpenSpec change 或 bugfix
-- 实现前存在明确 design 或 OpenSpec change
-- `ultra-planning` 已作为第二道关键门发挥作用
+- 用户只需要调用 `ultra-orchestrator`
+- 开发任务默认优先 `STRICT_OPENSPEC`
+- 无 OpenSpec change 时不会直接降级为 Markdown-only 编排
+- strict run 使用 ledger、JSON artifacts 和 contract validation
 - `TaskManifest` 和 `WorkPackage` 不依赖聊天历史也能被理解
-- 风险门有明确分级和 guardrail
-- review 有 accept / reject / reroute 结论
-- QA 明确区分 static evidence 与 dynamic evidence
-- delivery 产出 `final_deliverable`、`orchestration_log`、`vetter_report`
-- 残余风险和 follow-up 被单独列出
+- slice status、owned paths、review gate 和 QA gate 明确
+- delivery 输出 `final_deliverable`、`orchestration_log`、`vetter_report` 和 `control_surface_used`
+- 残余风险和 skipped control surfaces 被单独列出

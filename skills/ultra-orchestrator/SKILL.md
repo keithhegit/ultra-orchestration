@@ -1,159 +1,125 @@
 ---
 name: ultra-orchestrator
-description: Coordinate complex Codex work as a multi-stage orchestrator with intake, planning, dispatch, execution, review, QA, delivery, and retro. Use when a task spans multiple files, needs explicit roles, requires structured outputs, or would benefit from task graphs, run ledgers, feedback loops, safety gates, and auditable results.
+description: Primary Ultra Orchestration entry point for strict Codex-controlled engineering runs. Use this single skill for development, bug fixes, OpenSpec work, multi-file implementation, review/QA-heavy tasks, risk-gated work, or any run that needs automatic mode selection, OpenSpec bootstrap, machine-checkable TaskManifest and WorkPackage artifacts, ledger tracking, slice DAG execution, review, QA, delivery evidence, and retro.
 ---
 
 # Ultra Orchestrator
 
-Drive the run as a control plane, not as a generic helper.
+Use this skill as the default public entry point for Ultra Orchestration.
+The user should only need to invoke `$ultra-orchestrator <task description>`.
 
-## Run the workflow
+This is the mainline successor to the vNext protocol. The old stable workflow
+is preserved as `ultra-orchestrator-legacy`.
 
-Execute stages in this exact order:
+## Startup Contract
 
-1. Intake
-2. Plan
-3. Dispatch
-4. Execute
-5. Review
-6. QA
-7. Deliver
-8. Retro
+Recommended invocation:
 
-Treat this as a state machine, not a one-way waterfall.
+```text
+$ultra-orchestrator <task description>
+```
 
-Use these feedback loops when needed:
+OpenSpec invocation:
 
-- `Review -> Execute` when the result fails spec or engineering review
-- `QA -> Execute` when implementation is locally wrong but the plan still stands
-- `QA -> Plan` when QA reveals an architecture or requirement mistake
+```text
+$ultra-orchestrator OpenSpec change <change-id or path>: <task description>
+```
 
-Do not skip a stage unless the task is trivially small. If you skip, state why in the orchestration log.
+Compatibility invocation:
 
-## Produce mandatory artifacts
+```text
+$ultra-vnext-core <task description>
+```
 
-Every run must produce these top-level outputs:
+If the client exposes slash aliases, `/ultra-orchestrator` can be used the same
+way.
 
-- `final_deliverable`
-- `orchestration_log`
-- `vetter_report`
+## Run Mode Decision
 
-Use the canonical field shapes in [`references/contracts.md`](references/contracts.md).
+Classify the run before planning or execution:
 
-## Use supporting skills
+- `LIGHT`
+  review-only, QA-only, explanation-only, or user-explicit lightweight work
+- `STANDARD`
+  user-explicit fast orchestration with bounded risk and no full control plane
+- `STRICT`
+  development work where OpenSpec is unavailable but ledger and JSON contracts
+  are still required
+- `STRICT_OPENSPEC`
+  default for development work, bug fixes, multi-file implementation, pilots,
+  full orchestration tests, OpenSpec work, slice DAG work, and control-plane
+  validation
 
-Invoke these sibling skills by phase:
+Development tasks must prefer `STRICT_OPENSPEC`. If that mode is impossible,
+explain why and downgrade explicitly. Markdown-only artifacts are not enough
+for `STRICT` or `STRICT_OPENSPEC`.
 
-- `$clarify-and-intake` for intake normalization
-- `$decision-complete-planner` for task graph creation
-- `$dispatch-and-track` for work package assignment and ledger updates
-- `$spec-review` before implementation when scope or interfaces are non-trivial
-- `$code-review` after implementation and before integration
-- `$qa-verify` when behavior changed or user flows matter
-- `$deliver-and-retro` to assemble final outputs
-- `$risk-vetter` before new tools, skills, or high-impact actions
-- `$safety-guard` when commands or write scope look risky
-- `$autoplan` when the user wants a fast planning pipeline without manual phase handoffs
+## Router Duties
 
-## Enforce role boundaries
+When invoked:
 
-Keep one active role per phase:
+1. classify the task and choose `run_mode`
+2. create or require OpenSpec change scaffolding when `STRICT_OPENSPEC` applies
+3. initialize the run ledger for `STRICT` and `STRICT_OPENSPEC`
+4. route through the minimal required sibling skills
+5. validate machine-checkable artifacts before delivery
+6. produce delivery artifacts or a clear blocker
 
-- Intake Lead
-- Planner
-- Architect/Eng Reviewer
-- Worker
-- Reviewer
-- QA
-- Integrator
+Do not ask the user to manually name every subskill.
 
-Do not let the Planner perform broad implementation. Do not let the Integrator silently redo delegated work. Do not accept Reviewer approval when acceptance checks were undefined.
+## Routing Table
 
-## Dispatch rules
+| Task signal | Default mode | Route |
+|---|---|---|
+| development, feature, bugfix, multi-file implementation, pilot, full orchestration test | `STRICT_OPENSPEC` | OpenSpec bootstrap or bridge -> planning -> risk -> dispatch -> review -> QA -> delivery |
+| existing OpenSpec change path, `openspec/changes`, proposal/design/tasks, archive workflow | `STRICT_OPENSPEC` | bridge -> planning -> risk -> dispatch -> review -> QA -> delivery |
+| development task where OpenSpec cannot be used | `STRICT` | planning -> risk -> dispatch -> review -> QA -> delivery |
+| review-only request | `LIGHT` | review -> delivery |
+| QA-only request | `LIGHT` | QA -> delivery |
+| high-risk command, publishing, destructive write, credentials, external mutation | current mode plus risk gate | risk before execution |
 
-- Parallelize only independent work packages.
-- Only dispatch in parallel when dependencies are satisfied and `owned_paths` are disjoint.
-- Treat overlapping `owned_paths` as write-lock conflicts and serialize them.
-- Allow one constrained retry for transient failures.
-- Escalate hard blockers with summary, evidence, and suggested next step.
+If a task is tiny but still a development task, keep `STRICT_OPENSPEC` unless
+the user explicitly asks for lightweight execution.
 
-When in doubt, prefer serial execution over unsafe parallelism.
+## Strict Control Plane
 
-## Review rules
+For `STRICT` and `STRICT_OPENSPEC`, the run must use:
 
-Run two gates:
+- `scripts/new_run.py` to initialize a run directory
+- `ledger.json` as the execution state record
+- JSON `TaskManifest`
+- JSON `WorkPackage`
+- JSON or structured `AgentResult`
+- `scripts/validate_contracts.py` for core artifact validation
+- explicit review and QA gates
+- final `control_surface_used`
 
-1. Specification consistency
-2. Engineering quality
+If a required script or artifact cannot be used, stop with a blocker instead
+of silently downgrading to markdown-only orchestration.
 
-Use the compact multi-lens checklist in [`references/review-lenses.md`](references/review-lenses.md).
+## OpenSpec Bootstrap
 
-Do not integrate conclusions that lack evidence.
+When `STRICT_OPENSPEC` applies and no existing change is available, create or
+request this scaffold:
 
-## Ledger ownership
+```text
+openspec/changes/<change-id>/proposal.md
+openspec/changes/<change-id>/design.md
+openspec/changes/<change-id>/tasks.md
+openspec/changes/<change-id>/ultra-bridge.md
+```
 
-Treat `ExecutionLedger` as a control-plane artifact owned by the host orchestration layer.
+Default to a single bounded change and one current implementation slice.
+OpenSpec owns durable specification state. Ultra owns execution control.
 
-- Let LLMs produce structured artifacts and status intent.
-- Let scripts or the outer state machine update ledger fields precisely.
-- Do not ask an LLM to rewrite a large ledger JSON blob from scratch in a long conversation.
+## Slice-Driven Execution
 
-## Context firewall
+Keep `change` and `slice` separate:
 
-Default to artifact-driven handoff.
+- OpenSpec `change` is the specification and progress ledger unit
+- Ultra `slice` is the implementation, verification, and commit unit
 
-- Pass `TaskManifest`, `WorkPackage`, `AgentResult`, and narrow file pointers.
-- Do not pass full upstream chat history to downstream roles unless it is truly necessary.
-- Keep context on a need-to-know basis to reduce token pollution and inherited mistakes.
-
-## Safety rules
-
-Before using external tools, unknown skills, destructive commands, or broad write scopes:
-
-1. Run `$risk-vetter`
-2. Apply `$safety-guard` if needed
-3. Record the decision in `vetter_report`
-
-Use these policy thresholds:
-
-- `LOW`: allow
-- `MEDIUM`: allow with guardrails
-- `HIGH`: require explicit approval
-- `EXTREME`: block unless the user clearly approves
-
-## Use scripts when helpful
-
-- Run `scripts/new_run.py` to scaffold a run ledger and output shell.
-- Run `scripts/validate_run.py` to validate a completed run artifact.
-
-## Keep context compact
-
-Load detailed references only when needed:
-
-- [`references/contracts.md`](references/contracts.md) for canonical shapes
-- [`references/workflow.md`](references/workflow.md) for stage-by-stage guidance
-- [`references/review-lenses.md`](references/review-lenses.md) for review criteria
-- [`references/examples.md`](references/examples.md) for example run artifacts
-
-## Slice-driven execution
-
-When the repository uses OpenSpec changes, treat `change` and `slice` as different layers:
-
-- `change` is the specification and progress ledger unit
-- `slice` is the implementation, verification, and commit unit
-
-Default execution stack:
-
-1. `Program`
-2. `Milestone`
-3. `Change`
-4. `Slice`
-
-Do not report day-to-day engineering progress only at milestone granularity when a slice-level view is available.
-
-## Required slice status discipline
-
-Use this canonical slice status vocabulary:
+Use this slice status vocabulary:
 
 - `slice_0_not_opened`
 - `slice_0_spec_ready`
@@ -162,41 +128,81 @@ Use this canonical slice status vocabulary:
 - `slice_3_qa_pending`
 - `slice_4_done`
 
-For every active change, Ultra should know:
+Every active change must name current slice status, next slice, owned paths,
+and the verification gate required before advancing.
 
-- current slice status
-- next intended slice
-- owned paths for the current slice
-- required verification gate before advancing slice status
+## State Machine
 
-## Ledger synchronization rule
+Default phases:
 
-After each completed implementation slice:
+`Intake -> Plan -> Dispatch -> Execute -> Review -> QA -> Deliver -> Retro`
 
-1. update the OpenSpec-side change status intent
-2. update roadmap or current-status tally if counts changed
-3. record the verification result that justifies the new slice status
+Required loopbacks:
 
-Do not leave slice status advanced in code or conversation only. The ledger must match the implementation state.
+- `Review -> Execute` when the plan is valid but the work is wrong
+- `QA -> Execute` when behavior is wrong but architecture is still valid
+- `QA -> Plan` when the failure exposes a planning or requirement flaw
 
-## Single-change trial mode
+Default retry policy:
 
-When validating workflow speed or skill quality, prefer a `single-change trial`:
+- transient failures: at most 1 bounded retry per work package
+- repeated or hard blockers: escalate with summary, evidence, and next-step ask
 
-1. open or select one change
-2. set `slice_0_spec_ready`
-3. implement exactly one bounded slice
-4. run the minimum meaningful verification
-5. record friction, speed, and repeatability notes
+## Context Firewall
 
-Use this mode to calibrate whether a change is too broad, whether owned paths are too wide, or whether orchestration overhead is too high.
+Pass artifacts, not full chat history:
 
-## Batch-opening guidance
+- relevant `TaskManifest`
+- assigned `WorkPackage`
+- file pointers or artifact paths
+- failure context for retries or reroutes
 
-When many changes remain unopened, Ultra should prefer:
+## Safe Parallelism
 
-- opening only the next highest-value changes needed for the current execution wave
-- assigning slice status at creation time
-- avoiding a backlog of ambiguous change folders with no slice state
+Dispatch work in parallel only when:
 
-Open many changes in one pass only when the user explicitly wants backlog initialization or ledger normalization.
+- dependencies are satisfied in the DAG
+- `owned_paths` do not intersect with another active write package
+- inputs are stable enough to avoid speculative design
+- acceptance checks are concrete enough for independent verification
+
+If any condition is false, serialize.
+
+## Delivery Requirement
+
+Every delivery must include:
+
+- `final_deliverable`
+- `orchestration_log`
+- `vetter_report`
+- `control_surface_used`
+
+`control_surface_used` must state:
+
+- `run_mode`
+- `used_openspec_change`
+- `used_openspec_bridge`
+- `used_run_ledger`
+- `used_contract_validation`
+- `used_slice_dag`
+- `used_dynamic_qa`
+- skipped control surfaces and reasons
+
+## Supporting Skills
+
+Route through these siblings as needed:
+
+- `$openspec-ultra-bridge` for OpenSpec change mapping
+- `$decision-complete-planner` for JSON-ready task graphs
+- `$dispatch-and-track` for ledger and write-lock tracking
+- `$risk-vetter` and `$safety-guard` for risk gates and guardrails
+- `$spec-review` and `$code-review` for review gates
+- `$qa-verify` for verification
+- `$deliver-and-retro` for final packaging
+
+## Read Next
+
+- Read [routing](references/routing.md) for strict routing examples.
+- Read [contracts](references/contracts.md) for machine-checkable artifacts.
+- Read [state-machine](references/state-machine.md) for phase and loopback rules.
+- Read [design-tenets](references/design-tenets.md) for governing principles.

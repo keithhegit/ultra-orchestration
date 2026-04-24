@@ -7,6 +7,9 @@ description: Bridge OpenSpec change artifacts into Codex Ultra vNext execution c
 
 OpenSpec is the specification layer. Ultra remains the control plane.
 
+This skill is a compatibility bridge for vNext users. The default public entry
+point is now `$ultra-orchestrator`, which invokes this bridge as needed.
+
 ## What This Skill Does
 
 Translate:
@@ -28,6 +31,8 @@ into:
 2. Prefer one bounded `change` as the default execution unit.
 3. Use OpenSpec for durable spec memory and archive history.
 4. Use Ultra for dispatch, retries, review, QA, and delivery.
+5. In `STRICT_OPENSPEC`, do not continue without change scaffold, slice status,
+   JSON-ready planning artifacts, and ledger handoff.
 
 ## How To Use
 
@@ -37,6 +42,37 @@ into:
 4. Normalize the change into a reviewable `TaskManifest` and `WorkPackage`
    set.
 5. Hand off those outputs to `ultra-planning` or `ultra-execution-control`.
+
+## Required Change Scaffold
+
+For newly opened strict changes, initialize at minimum:
+
+- `proposal.md`
+- `design.md`
+- `tasks.md`
+- `ultra-bridge.md`
+
+Default status:
+
+- `slice_0_spec_ready` when the change is ready for implementation
+- `slice_0_not_opened` only for unopened planned changes
+
+## Slice Contract
+
+Keep `change` and `slice` separate:
+
+- OpenSpec `change` is the durable spec and progress node
+- Ultra `slice` is the implementation and verification unit
+
+Every bridge output should name:
+
+- `change_id`
+- current slice status
+- next slice
+- owned paths
+- review targets
+- QA targets
+- blockers for status sync or archive
 
 ## Script
 

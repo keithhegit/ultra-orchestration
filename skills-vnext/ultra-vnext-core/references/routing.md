@@ -1,7 +1,7 @@
 # Routing Reference
 
-`ultra-vnext-core` is the only required startup skill for vNext. It should load
-other vNext skills only when the task needs them.
+`ultra-vnext-core` is a compatibility alias for the mainline
+`ultra-orchestrator` strict protocol.
 
 ## Minimal Startup Forms
 
@@ -17,74 +17,32 @@ $ultra-vnext-core OpenSpec change workspace-model-defaults: implement the first 
 $ultra-vnext-core bugfix: command execution hangs after approval is granted.
 ```
 
-## Route Examples
+## Run Mode Priority
 
-### New Feature
+Use the strictest appropriate mode:
 
-Use:
+1. `STRICT_OPENSPEC`
+2. `STRICT`
+3. `STANDARD`
+4. `LIGHT`
 
-1. `ultra-brainstorming`
-2. `ultra-planning`
-3. `ultra-risk-vetting`
-4. `ultra-execution-control`
-5. `ultra-review`
-6. `ultra-qa`
-7. `ultra-delivery`
+Development work defaults to `STRICT_OPENSPEC`. Downgrade only when the user
+explicitly asks for lightweight execution or the environment makes OpenSpec
+impossible. Record the downgrade reason.
 
-Skip `ultra-brainstorming` only when success criteria and constraints are
-already explicit.
+## Strict Gate
 
-Planning is still mandatory before controlled dispatch.
+Do not move into controlled execution in `STRICT` or `STRICT_OPENSPEC` until
+the run has:
 
-### OpenSpec Change
-
-Use:
-
-1. `openspec-ultra-bridge-v2`
-2. `ultra-planning`
-3. `ultra-risk-vetting`
-4. `ultra-execution-control`
-5. `ultra-review`
-6. `ultra-qa`
-7. `ultra-delivery`
-
-OpenSpec owns the durable spec. Ultra owns execution control.
-
-Bridge output must still pass through `ultra-planning` before dispatch.
-
-### Bug Fix
-
-Use:
-
-1. `ultra-planning`
-2. `ultra-risk-vetting`
-3. `ultra-execution-control`
-4. `ultra-review`
-5. `ultra-qa`
-6. `ultra-delivery`
-
-The plan must include regression surface and verification intent before edits.
-
-## Planning Gate
-
-`ultra-planning` is the second hard gate after task classification.
-
-Do not move from routing into controlled execution until planning has produced:
-
-- one `TaskManifest`
-- one or more `WorkPackage` items
+- initialized run directory and `ledger.json`
+- one JSON `TaskManifest`
+- one or more JSON `WorkPackage` items
 - owned paths
 - acceptance checks
 - risk and retry assumptions
 - serial or parallel execution notes
+- contract validation plan
 
-If planning cannot produce those outputs, route back to brainstorming or bridge
-preparation instead of improvising during implementation.
-
-## Routing Principles
-
-- Prefer the shortest safe route.
-- Do not ask the user to enumerate subskills.
-- Do not load every sibling skill by default.
-- Add risk vetting before execution whenever scope or impact is uncertain.
-- End with delivery when the user needs a durable result.
+If those outputs cannot be produced, stop with a blocker rather than
+improvising during implementation.
